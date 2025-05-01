@@ -3,13 +3,6 @@
  * Cada pedido tiene un estado y esta asociado a un casillero.
  */
 public class Pedido {
-    // Enumeración que define los posibles estados de un pedido
-    public enum EstadoPedido {
-        EN_PREPARACION,   // El pedido está siendo preparado
-        EN_TRANSITO,      // El pedido está en camino
-        ENTREGADO,        // El pedido ha sido entregado
-        FALLIDO           // El pedido no pudo completarse
-    }
 
     // Atributos
     private EstadoPedido estado;           // Estado actual del pedido
