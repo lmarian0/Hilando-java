@@ -10,7 +10,11 @@ public class DespacharPedido extends Proceso{
     public void run() {
         if (verificarDatos())
         {//eCommerce.despacho();} // método dentro de Empresa que hace la lógica real
-        }else {throw new Error("No se pudo despachar el pedido");}
+        }
+        else {
+            registro.delPreparacion(casillero.getPedido()); /**REVISAR PEDIDOTEMP*/
+            throw new Error("No se pudo despachar el pedido");
+        }
     }
 
     public boolean verificarDatos(){

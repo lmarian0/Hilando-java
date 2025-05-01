@@ -6,6 +6,8 @@ package main;
 
 public abstract class Proceso extends EmpresaLogistica implements Runnable {
     protected EmpresaLogistica eCommerce; // Ejecuta el eCommerce de la empresa
+    protected Casilleros casillero = new Casilleros();
+    protected RegistroPedidos registro = new RegistroPedidos;
 
     /**Constructor del proceso
      * runnea un hilo*/
@@ -15,7 +17,8 @@ public abstract class Proceso extends EmpresaLogistica implements Runnable {
 
     @Override
     public void run() {
-        // Implementación del proceso aquí
+        System.out.println(eCommerce.getClass().getName());
+
     }
 
 }
