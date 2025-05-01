@@ -6,7 +6,7 @@ public class Pedido {
 
     // Atributos
     private EstadoPedido estado;           // Estado actual del pedido
-    private Casillero casilleroAsociado;   // Casillero asignado al pedido
+    private Casilleros casilleroAsociado;   // Casillero asignado al pedido
 
     /**
      * Constructor por defecto. Inicializa el pedido en estado EN_PREPARACION.
@@ -37,7 +37,7 @@ public class Pedido {
      * Asocia un casillero al pedido.
      * @param casillero Casillero a asociar.
      */
-    public void setCasilleroAsociado(Casillero casillero) {
+    public void setCasilleroAsociado(Casilleros casillero) {
         this.casilleroAsociado = casillero;
     }
 
@@ -45,7 +45,7 @@ public class Pedido {
      * Obtiene el casillero asociado al pedido.
      * @return Casillero asociado o null si no tiene.
      */
-    public Casillero getCasilleroAsociado() {
+    public Casilleros getCasilleroAsociado() {
         return casilleroAsociado;
     }
 }

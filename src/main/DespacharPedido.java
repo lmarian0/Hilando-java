@@ -9,8 +9,8 @@ public class DespacharPedido extends Proceso{
     @Override
     public void run() {
         if (verificarDatos())
-        {eCommerce.Preparacion();} // método dentro de Empresa que hace la lógica real
-        else {throw new Error("No se puede despachar el pedido");}
+        {//eCommerce.Preparacion();} // método dentro de Empresa que hace la lógica real
+        }else {throw new Error("No se puede despachar el pedido");}
     }
 
     public boolean verificarDatos(){
