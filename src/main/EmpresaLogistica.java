@@ -1,9 +1,5 @@
 import java.util.ArrayList;
 
-import main.Casilleros;
-import main.EstadoCasillero;
-import main.RegistroPedidos;
-
 public class EmpresaLogistica{
     private ArrayList<Casilleros> matrizCasilleros;
     private RegistroPedidos registro;
@@ -20,9 +16,9 @@ public class EmpresaLogistica{
         return matrizCasilleros.get(i);
     }
 
-    public Casilleros buscarCasillero(){
+    public Casilleros buscarCasilleroLibre(){
         for (int i = 0; i < matrizCasilleros.size(); i++){
-            if (getCasillero(i).getPedido().getEstado().equals(EstadoCasillero.VACIO)){
+            if (getCasillero(i).getEstado() == EstadoCasillero.VACIO){ //el proposito se entiende, pero basta con corroborar si el casillero esto libre
                 return getCasillero(i);
             }
         }

@@ -1,10 +1,8 @@
-package main;
-
 
 public class Casilleros{
     private EstadoCasillero estado;
     private int contadorOcupaciones;
-    private PedidoTemp pedido; 
+    private Pedido pedido; 
 
     public Casilleros(){
         this.estado = EstadoCasillero.VACIO;
@@ -31,7 +29,7 @@ public class Casilleros{
  * setea el pediddo que llego al casillero y cambia el estado a OCUPADO. Aumentado el contador de ocupaciones
  * @param pedido_arrivado
  */
-    public void setPedido(PedidoTemp pedido_arrivado){
+    public void setPedido(Pedido pedido_arrivado){
         if(estado == EstadoCasillero.OCUPADO){
             System.out.println("El casillero ya esta ocupado.");
             return;
@@ -41,8 +39,12 @@ public class Casilleros{
         contadorOcupaciones++;
     }
 
-    public PedidoTemp getPedido(){
+    public Pedido getPedido(){
         return pedido;
+    }
+
+    public EstadoCasillero getEstado(){
+        return estado;
     }
 
     public int getContadorOcupaciones(){

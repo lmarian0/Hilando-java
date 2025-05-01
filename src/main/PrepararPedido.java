@@ -1,4 +1,3 @@
-package main;
 
 public class PrepararPedido extends Proceso{
 
@@ -7,6 +6,6 @@ public class PrepararPedido extends Proceso{
     }
     @Override
     public void run() {
-        eCommerce.buscarCasillero(); // método dentro de Empresa que hace la lógica real
+        eCommerce.buscarCasilleroLibre(); // método dentro de Empresa que hace la lógica real
     }
 }

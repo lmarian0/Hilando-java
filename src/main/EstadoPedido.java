@@ -1,3 +1,4 @@
+
 public enum EstadoPedido {
         EN_PREPARACION,   // El pedido está siendo preparado
         EN_TRANSITO,      // El pedido está en camino

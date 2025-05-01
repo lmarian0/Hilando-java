@@ -1,4 +1,3 @@
-package main;
 
 /**
  * Ejecuta procesos para la ejecucion de la EMpresa Logistica.
