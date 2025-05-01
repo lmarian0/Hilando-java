@@ -11,14 +11,21 @@ public class EmpresaLogistica{
         this.registro = new RegistroPedidos();
     }
 
-    public void iniciarProcesos(){
-    }
-
     public Casilleros getCasillero(int i){
         return matrizCasilleros.get(i);
     }
 
-    public Casilleros buscarCasilleroLibre(){
+
+
+/**
+ * The function searches for a free cell in a matrix of cells and returns it, or throws an exception if
+ * no free cell is found.
+ * 
+ * @return The method `buscarCasilleroLibre` is returning a Casilleros object, specifically the first
+ * @throws IllegalStateException if there are no free cells available in the matrix.
+ * Casilleros object in the list that has a state of `VACIO` (empty).
+ */
+    public Casilleros buscarCasilleroLibre() throws IllegalStateException{
         for (int i = 0; i < matrizCasilleros.size(); i++){
             if (getCasillero(i).getEstado() == EstadoCasillero.VACIO){ //el proposito se entiende, pero basta con corroborar si el casillero esto libre
                 return getCasillero(i);
