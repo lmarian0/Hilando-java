@@ -48,3 +48,4 @@ public class Pedido {
     public Casillero getCasilleroAsociado() {
         return casilleroAsociado;
     }
+}
