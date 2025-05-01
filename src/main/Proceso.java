@@ -5,11 +5,11 @@ package main;
  */
 
 public abstract class Proceso extends EmpresaLogistica implements Runnable{
-    private EmpresaLogistica eCommerce; // Ejecuta el eCommerce de la empresa
+    protected EmpresaLogistica eCommerce; // Ejecuta el eCommerce de la empresa
 
     /**Constructor del proceso
      * runnea un hilo*/
-    public Proceso() {
-        run();
+    public Proceso(EmpresaLogistica eCommerce) {
+        this.eCommerce = eCommerce;
     }
 }
