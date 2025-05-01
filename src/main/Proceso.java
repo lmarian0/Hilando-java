@@ -4,7 +4,7 @@ package main;
  * Ejecuta procesos para la ejecucion de la EMpresa Logistica.
  */
 
-public abstract class Proceso extends EmpresaLogistica implements Runnable{
+public abstract class Proceso implements Runnable extends EmpresaLogistica{
     protected EmpresaLogistica eCommerce; // Ejecuta el eCommerce de la empresa
 
     /**Constructor del proceso
