@@ -37,7 +37,8 @@ public class RegistroPedidos {
     public List<Pedido> getVerificados(){
         return verificados;
     }
-
+    //
+     //             ⊂(◉‿◉)つ
     //-----------------------------------------------------------------------------------------------
     public void addPreparacion(Pedido pedido){
         enPreparacion.add(pedido);
