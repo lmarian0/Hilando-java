@@ -1,8 +1,11 @@
+package main;
+
 import java.util.ArrayList;
 
 public class EmpresaLogistica{
     private ArrayList<Casilleros> matrizCasilleros;
     private RegistroPedidos registro;
+
 
     public EmpresaLogistica(){
         this.matrizCasilleros = new ArrayList<Casilleros>(200);
