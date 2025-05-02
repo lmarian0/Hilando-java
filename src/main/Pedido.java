@@ -1,3 +1,5 @@
+package main;
+
 /**
  * Clase que representa un pedido en el sistema de logística.
  * Cada pedido tiene un estado y esta asociado a un casillero.

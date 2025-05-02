@@ -1,3 +1,4 @@
+package main;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -8,7 +9,9 @@ public class DespacharPedido extends Proceso{
     @Override
     public void run() {
         if (verificarDatos())
-        {//eCommerce.despacho();} // método dentro de Empresa que hace la lógica real
+        {   eCommerce.buscarCasilleroLibre(); // método dentro de Empresa que hace la lógica real
+            System.out.println("Despachazao Pedido");
+            System.out.println(eCommerce.getCasillero(0).getEstado());
         }
         else {
             registro.delPreparacion(casillero.getPedido()); /**REVISAR PEDIDOTEMP*/

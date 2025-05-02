@@ -1,3 +1,4 @@
+package main;
 
 import java.util.ArrayList;
 
@@ -8,7 +9,9 @@ public class EmpresaLogistica{
 
     public EmpresaLogistica(){
         this.matrizCasilleros = new ArrayList<Casilleros>(200);
-        this.registro = new RegistroPedidos();
+        for (int i = 0; i < 200; i++){
+            matrizCasilleros.add(new Casilleros());
+        }
     }
 
     public void iniciarProcesos(){
