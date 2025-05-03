@@ -51,4 +51,8 @@ public class Casilleros{
     public int getContadorOcupaciones(){
         return contadorOcupaciones;
     }
+
+    public synchronized void liberar() {
+        this.estado = EstadoCasillero.VACIO;
+    }
 }
