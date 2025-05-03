@@ -21,7 +21,7 @@ public class EmpresaLogistica{
         return matrizCasilleros.get(i);
     }
 
-    public RegistroPedidos gRegistroPedidos(){
+    public RegistroPedidos getRegistroPedidos(){
         return registro;
     }
 
