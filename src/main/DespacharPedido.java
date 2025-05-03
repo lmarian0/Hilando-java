@@ -16,7 +16,7 @@ public class DespacharPedido extends Proceso{
          * 
          */
         Pedido pedido = null;
-        List<Pedido> lista= eCommerce.getRegistro().getPreparacion();
+        List<Pedido> lista= eCommerce.getRegistroPedidos().getPreparacion();
 
         if(lista.isEmpty()){
             try {
@@ -33,13 +33,13 @@ public class DespacharPedido extends Proceso{
             if (verificarDatos() && pedido.getEstado()==EstadoPedido.EN_PREPARACION){
                 liberarCasillero(pedido);
                 pedido.setEstado(EstadoPedido.EN_TRANSITO);
-                eCommerce.getRegistro().delPreparacion(pedido);
-                eCommerce.getRegistro().addTransito(pedido);
+                eCommerce.getRegistroPedidos().delPreparacion(pedido);
+                eCommerce.getRegistroPedidos().addTransito(pedido);
             }
             else {
                 marcarCasilleroFueraDeServicio(pedido);
-                eCommerce.getRegistro().delPreparacion(pedido);
-                eCommerce.getRegistro().addFallidos(pedido);
+                eCommerce.getRegistroPedidos().delPreparacion(pedido);
+                eCommerce.getRegistroPedidos().addFallidos(pedido);
             }
         }
 

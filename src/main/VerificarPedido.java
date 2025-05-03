@@ -16,7 +16,7 @@ public class VerificarPedido extends Proceso{
          * 
          */
         Pedido pedido = null;
-        List<Pedido> lista= eCommerce.getRegistro().getEntregados();
+        List<Pedido> lista= eCommerce.getRegistroPedidos().getEntregados();
 
         if(lista.isEmpty()){
             try {
@@ -31,12 +31,12 @@ public class VerificarPedido extends Proceso{
             int index = ThreadLocalRandom.current().nextInt(lista.size());
             pedido = lista.get(index);
             if (verificarDatos() && pedido.getEstado()==EstadoPedido.ENTREGADO){
-                eCommerce.getRegistro().delEntregados(pedido);
-                eCommerce.getRegistro().addVerificados(pedido);
+                eCommerce.getRegistroPedidos().delEntregados(pedido);
+                eCommerce.getRegistroPedidos().addVerificados(pedido);
             }
             else {
-                eCommerce.getRegistro().delEntregados(pedido);
-                eCommerce.getRegistro().addFallidos(pedido);
+                eCommerce.getRegistroPedidos().delEntregados(pedido);
+                eCommerce.getRegistroPedidos().addFallidos(pedido);
             }
         }
 
