@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class EmpresaLogistica{
     private ArrayList<Casilleros> matrizCasilleros;
-    private RegistroPedidos registro;
+    private RegistroPedidos registro = new RegistroPedidos(); //registro de pedidos
 
 
     public EmpresaLogistica(){
