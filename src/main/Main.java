@@ -12,6 +12,10 @@ public class Main {
         nuevos_pedidos.add(pedido);
        }
 
+       // Iniciar el LOG de estadisticas
+       Thread logThread = new Thread(new LogEstadisticas(empresa));
+       logThread.start();
+
        //ETAPA 1: PrepararPedido (3 hilos)
 
        for (int i = 0; i<3; i++){
@@ -39,5 +43,13 @@ public class Main {
         Thread verificacion = new Thread(new VerificarPedido(empresa), "Verification_thread " + (i+1));
         verificacion.start();
        }
+
+       try{
+        Thread.sleep(10000); // Simular tiempo de ejecucion del programa
+       } catch(InterruptedException e){
+        e.printStackTrace();
+       }
+
+       logThread.interrupt();
     }
 }
