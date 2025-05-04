@@ -12,15 +12,13 @@ public class DespacharPedido extends Proceso{
     public void run() {
 
         /*
-         * Agarrar un pedido aleatorio de la lista preparacion
-         * 
-         * 
-         */
-        Pedido pedido = null;
-        
-        
-        try {
-                while(!Thread.currentThread().isInterrupted()) {
+         
+Agarrar un pedido aleatorio de la lista preparacion
+*/
+  Pedido pedido = null;
+
+  try {
+          while(!Thread.currentThread().isInterrupted()) {
 
                     List<Pedido> lista= eCommerce.getRegistroPedidos().getPreparacion();
                     if (lista.isEmpty()){
@@ -28,38 +26,34 @@ public class DespacharPedido extends Proceso{
                     System.out.println("No hay pedidos a dormir...");
                     continue;
                 }
-    
+
                 int index = ThreadLocalRandom.current().nextInt(lista.size());
                 pedido = lista.get(index);
                     if (verificarDatos() && pedido.getEstado()==EstadoPedido.EN_PREPARACION){
                     liberarCasillero(pedido);
-    
+
                     pedido.setEstado(EstadoPedido.EN_TRANSITO);
                     eCommerce.getRegistroPedidos().delPreparacion(pedido);
                     eCommerce.getRegistroPedidos().addTransito(pedido);
-                    
+
                 }
                     else {
                     marcarCasilleroFueraDeServicio(pedido);
                     eCommerce.getRegistroPedidos().delPreparacion(pedido);
                     eCommerce.getRegistroPedidos().addFallidos(pedido);
-                    
+
                 }
-                    
+
                 TimeUnit.MILLISECONDS.sleep(200);
 
-                
-            
-            
+
+
+
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt(); // Restablecer el estado de interrupción
         }
-        
-        
-
-        
-    }
+}
 
     private void liberarCasillero(Pedido pedido){
         pedido.getCasilleroAsociado().liberar();
