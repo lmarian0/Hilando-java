@@ -69,7 +69,7 @@ public class PrepararPedido extends Proceso{
 
                     }
 
-                    Thread.sleep(2000);
+                    Thread.sleep(2);
                 }
                 else{
                     break;
