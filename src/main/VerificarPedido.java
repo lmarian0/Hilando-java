@@ -5,7 +5,6 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class VerificarPedido extends Proceso{
     private List<Pedido> lista= eCommerce.getRegistroPedidos().getEntregados();
-    private boolean verificando = false;
 
     public VerificarPedido(EmpresaLogistica eCommerce) {
         super(eCommerce);
@@ -29,8 +28,6 @@ public class VerificarPedido extends Proceso{
             // Sale de la espera y notifica a otros hilos
             notifyAll();
         }
-
-        verificando = true;
 
         synchronized (lista) { // Asegura la sincronización adecuada
             notifyAll();
