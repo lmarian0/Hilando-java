@@ -1,6 +1,7 @@
 //package main;
 
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
 import java.util.List;
 
 public class DespacharPedido extends Proceso{
@@ -16,38 +17,52 @@ public class DespacharPedido extends Proceso{
          * 
          */
         Pedido pedido = null;
-        List<Pedido> lista= eCommerce.getRegistroPedidos().getPreparacion();
+        
+        
+        try {
+                while(!Thread.currentThread().isInterrupted()) {
 
-        if(lista.isEmpty()){
-            try {
-                System.out.println("No hay pedidos para despachar. Esperando...");
-                wait(); // El hilo se pone en espera hasta que otro hilo notifique
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                System.out.println("Hilo interrumpido mientras estaba en espera.");
+                    List<Pedido> lista= eCommerce.getRegistroPedidos().getPreparacion();
+                    if (lista.isEmpty()){
+                    TimeUnit.MILLISECONDS.sleep(500);
+                    System.out.println("No hay pedidos a dormir...");
+                    continue;
+                }
+    
+                int index = ThreadLocalRandom.current().nextInt(lista.size());
+                pedido = lista.get(index);
+                    if (verificarDatos() && pedido.getEstado()==EstadoPedido.EN_PREPARACION){
+                    liberarCasillero(pedido);
+    
+                    pedido.setEstado(EstadoPedido.EN_TRANSITO);
+                    eCommerce.getRegistroPedidos().delPreparacion(pedido);
+                    eCommerce.getRegistroPedidos().addTransito(pedido);
+                    
+                }
+                    else {
+                    marcarCasilleroFueraDeServicio(pedido);
+                    eCommerce.getRegistroPedidos().delPreparacion(pedido);
+                    eCommerce.getRegistroPedidos().addFallidos(pedido);
+                    
+                }
+                    
+                TimeUnit.MILLISECONDS.sleep(200);
+
+                
+            
+            
             }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt(); // Restablecer el estado de interrupción
         }
-        else{
-            int index = ThreadLocalRandom.current().nextInt(lista.size());
-            pedido = lista.get(index);
-            if (verificarDatos() && pedido.getEstado()==EstadoPedido.EN_PREPARACION){
-                liberarCasillero(pedido);
-                pedido.setEstado(EstadoPedido.EN_TRANSITO);
-                eCommerce.getRegistroPedidos().delPreparacion(pedido);
-                eCommerce.getRegistroPedidos().addTransito(pedido);
-            }
-            else {
-                marcarCasilleroFueraDeServicio(pedido);
-                eCommerce.getRegistroPedidos().delPreparacion(pedido);
-                eCommerce.getRegistroPedidos().addFallidos(pedido);
-            }
-        }
+        
+        
 
         
     }
 
     private void liberarCasillero(Pedido pedido){
-        pedido.getCasilleroAsociado().setEstado(EstadoCasillero.VACIO);
+        pedido.getCasilleroAsociado().liberar();
     }
 
     private void marcarCasilleroFueraDeServicio(Pedido pedido){
