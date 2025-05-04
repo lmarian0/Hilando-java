@@ -30,7 +30,7 @@ public class EntregarPedido extends Proceso{
     }
 
     public void procesarEntrega() {
-        List <Pedido> pedidosEnTransito = registro.getTransito();
+        List <Pedido> pedidosEnTransito = eCommerce.getRegistroPedidos().getTransito();
 
         if (pedidosEnTransito.isEmpty()) {
             return; // No hay pedidos en tránsito
