@@ -1,4 +1,4 @@
-package main;
+//package main;
 
 import java.util.List;
 //import java.util.concurrent.ThreadLocalRandom;
@@ -30,7 +30,7 @@ public class EntregarPedido extends Proceso{
     }
 
     public void procesarEntrega() {
-        List <Pedido> pedidosEnTransito = registro.getTransito();
+        List <Pedido> pedidosEnTransito = eCommerce.getRegistroPedidos().getTransito();
 
         if (pedidosEnTransito.isEmpty()) {
             return; // No hay pedidos en tránsito
@@ -43,15 +43,15 @@ public class EntregarPedido extends Proceso{
             Pedido pedido = pedidosEnTransito.get(indiceAleatorio);
         
             if (verificarDatos()) { // 90% de éxito
-                registro.delTransito(pedido);
-                registro.addEntregados(pedido);
+                eCommerce.getRegistroPedidos().delTransito(pedido);
+                eCommerce.getRegistroPedidos().addEntregados(pedido);
                 pedido.setEstado(EstadoPedido.ENTREGADO);
                 
                 // Liberar casillero aquí (dentro del bloque sincronizado)
                 pedido.getCasilleroAsociado().liberar();
             } else { // 10% de fallo
-                registro.delTransito(pedido);
-                registro.addFallidos(pedido);
+                eCommerce.getRegistroPedidos().delTransito(pedido);
+                eCommerce.getRegistroPedidos().addFallidos(pedido);
                 pedido.setEstado(EstadoPedido.FALLIDO);
             }
         }
