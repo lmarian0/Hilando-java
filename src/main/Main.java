@@ -45,9 +45,9 @@ public class Main {
        }
 
        try{
-        Thread.sleep(10000); // Simular tiempo de ejecucion del programa
+        Thread.sleep(20000); // Simular tiempo de ejecucion del programa
        } catch(InterruptedException e){
-        e.printStackTrace();
+        System.out.println("Finalizo el registro");
        }
 
        logThread.interrupt();
