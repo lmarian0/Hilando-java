@@ -1,12 +1,55 @@
-package main;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
+       EmpresaLogistica empresa = new EmpresaLogistica();
+       List<Pedido> nuevos_pedidos = new ArrayList<>();
 
-        System.out.println("hola mundo");
-        EmpresaLogistica eCommerce = new EmpresaLogistica();
-        Proceso proceso = new DespacharPedido(eCommerce);
-        proceso.run();
+       //Simula la llegada de 500 pedidos a la empresa
+       for(int i = 0; i<500; i++){
+        Pedido pedido = new Pedido();
+        nuevos_pedidos.add(pedido);
+       }
 
+       // Iniciar el LOG de estadisticas
+       Thread logThread = new Thread(new LogEstadisticas(empresa));
+       logThread.start();
+
+       //ETAPA 1: PrepararPedido (3 hilos)
+
+       for (int i = 0; i<3; i++){
+        Thread preparacion = new Thread(new PrepararPedido(empresa,nuevos_pedidos), "Preparation_thread " + (i+1));
+        preparacion.start();
+       }
+
+       //ETAPA 2: DespachoPedido (2 hilos)
+
+       for (int i = 0; i<2; i++){
+        Thread despacho = new Thread(new DespacharPedido(empresa), "Dispatch_thread " + (i+1));
+        despacho.start();
+       }
+
+       //ETAPA 3: EntregaPedido (3 hilos)
+
+       for (int i = 0; i<3; i++){
+        Thread entrega = new Thread(new EntregarPedido(empresa,1), "Delivety_thread " + (i+1));
+        entrega.start();
+       }
+
+       //ETAPA 4: VerificarPedido (2 hilos)
+
+      /*  for (int i = 0; i<2; i++){
+        Thread verificacion = new Thread(new VerificarPedido(empresa), "Verification_thread " + (i+1));
+        verificacion.start();
+       }*/
+
+       try{
+        Thread.sleep(20000); // Simular tiempo de ejecucion del programa
+       } catch(InterruptedException e){
+        System.out.println("Finalizo el registro");
+       }
+
+       logThread.interrupt();
     }
 }

@@ -1,4 +1,4 @@
-package main;
+//package main;
 
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -30,7 +30,7 @@ public class VerificarPedido extends Proceso{
         else{
             int index = ThreadLocalRandom.current().nextInt(lista.size());
             pedido = lista.get(index);
-            if (verificarDatos() && pedido.getEstado()==EstadoPedido.ENTREGADO){
+            if (verificarDatos()){
                 eCommerce.getRegistroPedidos().delEntregados(pedido);
                 eCommerce.getRegistroPedidos().addVerificados(pedido);
             }
@@ -38,9 +38,7 @@ public class VerificarPedido extends Proceso{
                 eCommerce.getRegistroPedidos().delEntregados(pedido);
                 eCommerce.getRegistroPedidos().addFallidos(pedido);
             }
-        }
-
-        
+        }   
     }
 
    
