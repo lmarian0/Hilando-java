@@ -7,14 +7,12 @@ import java.util.Random;
 
 public class EntregarPedido extends Proceso{
 
-    private final RegistroPedidos registro;
     private final int demoraE;
     private final Random random = new Random();
     
 
-    public EntregarPedido(EmpresaLogistica eCommerce, RegistroPedidos registro, int demoraE) {
+    public EntregarPedido(EmpresaLogistica eCommerce, int demoraE) {
         super(eCommerce);
-        this.registro = registro;
         this.demoraE = demoraE;
     }
 
@@ -32,7 +30,7 @@ public class EntregarPedido extends Proceso{
     }
 
     public void procesarEntrega() {
-        List <Pedido> pedidosEnTransito = registro.getTransito();
+        List <Pedido> pedidosEnTransito = eCommerce.getRegistroPedidos().getTransito();
 
         if (pedidosEnTransito.isEmpty()) {
             return; // No hay pedidos en tránsito
@@ -45,15 +43,15 @@ public class EntregarPedido extends Proceso{
             Pedido pedido = pedidosEnTransito.get(indiceAleatorio);
         
             if (verificarDatos()) { // 90% de éxito
-                registro.delTransito(pedido);
-                registro.addEntregados(pedido);
+                eCommerce.getRegistroPedidos().delTransito(pedido);
+                eCommerce.getRegistroPedidos().addEntregados(pedido);
                 pedido.setEstado(EstadoPedido.ENTREGADO);
                 
                 // Liberar casillero aquí (dentro del bloque sincronizado)
                 pedido.getCasilleroAsociado().liberar();
             } else { // 10% de fallo
-                registro.delTransito(pedido);
-                registro.addFallidos(pedido);
+                eCommerce.getRegistroPedidos().delTransito(pedido);
+                eCommerce.getRegistroPedidos().addFallidos(pedido);
                 pedido.setEstado(EstadoPedido.FALLIDO);
             }
         }
