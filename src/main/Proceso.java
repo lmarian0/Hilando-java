@@ -1,13 +1,11 @@
-package main;
+//package main;
 
 /**
  * Ejecuta procesos para la ejecucion de la EMpresa Logistica.
  */
 
-public abstract class Proceso extends EmpresaLogistica implements Runnable {
+public abstract class Proceso implements Runnable {
     protected EmpresaLogistica eCommerce; // Ejecuta el eCommerce de la empresa
-    protected Casilleros casillero = new Casilleros();
-    protected RegistroPedidos registro = new RegistroPedidos(); //registro de pedidos
 
     /**Constructor del proceso
      * runnea un hilo*/

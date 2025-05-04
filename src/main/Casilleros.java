@@ -1,4 +1,4 @@
-package main;
+//package main;
 
 public class Casilleros{
     private EstadoCasillero estado;
@@ -54,5 +54,6 @@ public class Casilleros{
 
     public synchronized void liberar() {
         this.estado = EstadoCasillero.VACIO;
+        this.pedido = null;
     }
 }

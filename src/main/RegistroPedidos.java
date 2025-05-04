@@ -1,9 +1,9 @@
-package main;
+//package main;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class RegistroPedidos extends EmpresaLogistica{
+public class RegistroPedidos {
 
     private List<Pedido> enPreparacion;
     private List<Pedido> enTransito;
