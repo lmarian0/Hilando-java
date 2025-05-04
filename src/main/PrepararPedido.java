@@ -23,21 +23,17 @@ public class PrepararPedido extends Proceso{
     }
 
     private Casilleros buscarCasilleroLibre() {
-        int intentos = 0;
-        int maxIntentos = 500; // Limitar el número de intentos para evitar bucles infinitos
     
-        while (intentos < maxIntentos) {
-            int numRand = random.nextInt(201); // Generar un índice aleatorio
+        while (!pedidosIniciales.isEmpty()) {
+            int numRand = random.nextInt(200); // Generar un índice aleatorio
             synchronized (controlCasillero) {
                 Casilleros casillero = eCommerce.getCasillero(numRand);
                 if (verifVacio(casillero)) {
                     return casillero;
                 }
             }
-            intentos++;
         }
-    
-        throw new IllegalStateException("No se encontró un casillero libre después de " + maxIntentos + " intentos.");
+        throw new IllegalStateException("No se encontró un casillero libre.");
     }
 
     @Override
@@ -69,7 +65,7 @@ public class PrepararPedido extends Proceso{
 
                     }
 
-                    Thread.sleep(2000);
+                    Thread.sleep(10);//Simula el tiempo de preparación del pedido
                 }
                 else{
                     break;
