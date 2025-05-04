@@ -1,12 +1,17 @@
 // package main;
 import java.util.Random;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PrepararPedido extends Proceso{
     private Random random = new Random();
     private Object controlCasillero = new Object();
+    private List<Pedido> pedidosIniciales = new ArrayList<>(); // Lista de pedidos iniciales
 
-    public PrepararPedido(EmpresaLogistica eCommerce) {
+    public PrepararPedido(EmpresaLogistica eCommerce,List<Pedido> pedidosIniciales) {
         super(eCommerce);
+        this.pedidosIniciales = pedidosIniciales; //inicializa la lista de pedidos que llegaron a la empresa
+
     }
 
     private boolean verifVacio(Casilleros casillero){
@@ -16,17 +21,6 @@ public class PrepararPedido extends Proceso{
             return false;
         }
     }
-
-    // private Casilleros buscarCasilleroLibre(){
-    //     while(true){
-    //         int numRand = random.nextInt(201);
-    //         synchronized (controlCasillero){
-    //             if(verifVacio(eCommerce.getCasillero(numRand))){
-    //                 return eCommerce.getCasillero(numRand);
-    //             }
-    //         }
-    //     }
-    // }
 
     private Casilleros buscarCasilleroLibre() {
         int intentos = 0;
@@ -49,11 +43,42 @@ public class PrepararPedido extends Proceso{
     @Override
     public void run() {
         // Buscar un casillero libre
-        Casilleros casillero = buscarCasilleroLibre();
-                    
-        synchronized (controlCasillero) {
-            casillero.setEstado(EstadoCasillero.OCUPADO);
-            eCommerce.getRegistroPedidos().addPreparacion(casillero.getPedido());
+        while(true){
+            try{
+                Pedido pedido_cargar = null;
+                synchronized(pedidosIniciales){
+                    if(!pedidosIniciales.isEmpty()){
+                        pedido_cargar = pedidosIniciales.remove(0);
+                    }
+                }
+                if(pedido_cargar != null){
+                    Casilleros casillero = buscarCasilleroLibre();
+
+                    synchronized(controlCasillero){
+                        
+                        //Asignacion de pedido a casillero libre
+                        casillero.setPedido(pedido_cargar);
+                        System.out.println(Thread.currentThread().getName() + " asignó el pedido: " + pedido_cargar);
+
+                        //Cambio de estados de y pedido
+                        casillero.setEstado(EstadoCasillero.OCUPADO);
+                        pedido_cargar.setEstado(EstadoPedido.EN_PREPARACION);
+
+                        //Cargado al registro de preparacion
+                        eCommerce.getRegistroPedidos().addPreparacion(pedido_cargar);
+
+                    }
+
+                    Thread.sleep(2000);
+                }
+                else{
+                    break;
+                }
+            } catch (InterruptedException e){
+                System.out.println(Thread.currentThread().getName() + " interrumpido.");
+                Thread.currentThread().interrupt();
+                break;
+            }
         }
     }
 }

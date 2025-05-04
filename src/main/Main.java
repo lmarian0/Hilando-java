@@ -1,11 +1,21 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class Main {
     public static void main(String[] args) {
        EmpresaLogistica empresa = new EmpresaLogistica();
+       List<Pedido> nuevos_pedidos = new ArrayList<>();
+
+       //Simula la llegada de 500 pedidos a la empresa
+       for(int i = 0; i<500; i++){
+        Pedido pedido = new Pedido();
+        nuevos_pedidos.add(pedido);
+       }
 
        //ETAPA 1: PrepararPedido (3 hilos)
 
        for (int i = 0; i<3; i++){
-        Thread preparacion = new Thread(new PrepararPedido(empresa), "Preparation_thread " + i+1);
+        Thread preparacion = new Thread(new PrepararPedido(empresa,nuevos_pedidos), "Preparation_thread " + i+1);
         preparacion.start();
        }
 
