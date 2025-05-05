@@ -9,12 +9,14 @@ public class Pedido {
     // Atributos
     private EstadoPedido estado;           // Estado actual del pedido
     private Casilleros casilleroAsociado;   // Casillero asignado al pedido
-
+    private int idPedido;                  // ID del pedido (no se utiliza en este código, pero puede ser útil para futuras implementaciones)
     /**
      * Constructor por defecto. Inicializa el pedido en estado EN_PREPARACION.
      */
-    public Pedido() {
+    public Pedido(int idPedido) {
         this.estado = EstadoPedido.EN_PREPARACION;
+        this.idPedido = idPedido;
+        this.casilleroAsociado = null; // Inicialmente no hay casillero asociado
     }
 
     // Métodos de acceso (Getters y Setters)
@@ -49,5 +51,9 @@ public class Pedido {
      */
     public synchronized Casilleros getCasilleroAsociado() {
         return casilleroAsociado;
+    }
+
+    public int getIdPedido() {
+        return idPedido;
     }
 }

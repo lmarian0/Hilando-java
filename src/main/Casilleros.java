@@ -4,11 +4,13 @@ public class Casilleros{
     private EstadoCasillero estado;
     private int contadorOcupaciones;
     private Pedido pedido; 
+    private int idCasillero;
 
-    public Casilleros(){
+    public Casilleros(int idCasillero){
         this.estado = EstadoCasillero.VACIO;
         this.contadorOcupaciones = 0;
         this.pedido = null;
+        this.idCasillero = idCasillero;
     }
 
     public boolean esVacio(){
@@ -47,5 +49,9 @@ public class Casilleros{
     public synchronized void liberar() {
         this.estado = EstadoCasillero.VACIO;
         this.pedido = null;
+    }
+
+    public int getIdCasillero() {
+        return idCasillero;
     }
 }

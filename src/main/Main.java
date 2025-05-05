@@ -8,7 +8,7 @@ public class Main {
 
        //Simula la llegada de 500 pedidos a la empresa
        for(int i = 0; i<500; i++){
-        Pedido pedido = new Pedido();
+        Pedido pedido = new Pedido(i);
         nuevos_pedidos.add(pedido);
        }
 

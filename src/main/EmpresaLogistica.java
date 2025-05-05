@@ -10,7 +10,7 @@ public class EmpresaLogistica{
         this.matrizCasilleros = new ArrayList<Casilleros>(200);
         this.registro = new RegistroPedidos();
         for (int i = 0; i < 200; i++){
-            matrizCasilleros.add(new Casilleros());
+            matrizCasilleros.add(new Casilleros(i));
         }
     }
 
