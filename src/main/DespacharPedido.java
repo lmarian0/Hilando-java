@@ -19,7 +19,7 @@ public class DespacharPedido extends Proceso{
             while(!Thread.currentThread().isInterrupted()) {
                     
                 if (lista.isEmpty()){
-                    TimeUnit.MILLISECONDS.sleep(10000);
+                    TimeUnit.MILLISECONDS.sleep(2000);
                     System.out.println("No hay pedidos, a dormir...");
                     continue;
                 }
@@ -29,7 +29,7 @@ public class DespacharPedido extends Proceso{
                 }
                 if (verificarDatos() && pedido.getEstado()==EstadoPedido.EN_PREPARACION){
                     liberarCasillero(pedido);
-                    System.out.println(Thread.currentThread().getName() + " asignó el pedido: " );
+                    System.out.println(Thread.currentThread().getName() + " asignó el pedido" + pedido.getId() + "a la lista en transito " );
                     pedido.setEstado(EstadoPedido.EN_TRANSITO);
                     eCommerce.getRegistroPedidos().delPreparacion(pedido);
                     eCommerce.getRegistroPedidos().addTransito(pedido);

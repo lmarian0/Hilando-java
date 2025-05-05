@@ -29,12 +29,15 @@ public class PrepararPedido extends Proceso{
                     }
                 }
 
-                if (pedido != null) {
+                if (pedido != null ) {
                     Casilleros casillero = buscarCasilleroLibre(); // Buscar un casillero libre
                     
                     casillero.setPedido(pedido); // Asignar el pedido al casillero
-                    System.out.println(Thread.currentThread().getName() + " guardó el pedido " + casillero.getPedido().getId() + " en el casillero " + casillero.getId());
+                    pedido.setCasilleroAsociado(casillero);
+                    eCommerce.getRegistroPedidos().addPreparacion(pedido);
+                    System.out.println(Thread.currentThread().getName() + " guardó el pedido " + pedido.getId() + " en el casillero " + casillero.getId());
                     TimeUnit.MILLISECONDS.sleep(100); // Simular tiempo de preparación del pedido
+                    
                     
                 } else {
                     break; // Si no hay más pedidos, salir del bucle
