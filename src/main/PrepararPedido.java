@@ -1,5 +1,6 @@
 // package main;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,8 +14,42 @@ public class PrepararPedido extends Proceso{
 
     }
 
-    private boolean verifVacio(Casilleros casillero){
+    Object control = new Object(); // Objeto de control para la sincronización
+
+    @Override
+    public void run() {
+        while (true) {
+            try {
+                Pedido pedido = null;
+
+                // Sincronizar el acceso a la lista de pedidos
+                synchronized (control) {
+                    if (!pedidosIniciales.isEmpty()) {
+                        pedido = buscarPedido(); // Tomar y eliminar el pedido de la lista
+                    }
+                }
+
+                if (pedido != null) {
+                    Casilleros casillero = buscarCasilleroLibre(); // Buscar un casillero libre
+                    
+                    casillero.setPedido(pedido); // Asignar el pedido al casillero
+                    System.out.println(Thread.currentThread().getName() + " guardó el pedido " + casillero.getPedido().getId() + " en el casillero " + casillero.getId());
+                    TimeUnit.MILLISECONDS.sleep(100); // Simular tiempo de preparación del pedido
+                    
+                } else {
+                    break; // Si no hay más pedidos, salir del bucle
+                }
+            } catch (InterruptedException e) {
+                System.out.println(Thread.currentThread().getName() + " interrumpido.");
+                Thread.currentThread().interrupt();
+                break;
+            }
+        }
+    }
+
+    private synchronized boolean verifVacio(Casilleros casillero){
         if(casillero.getEstado() == EstadoCasillero.VACIO){
+            casillero.setEstado(EstadoCasillero.OCUPADO); // Cambiar el estado del casillero a OCUPADO
             return true;
         }else{
             return false;
@@ -26,47 +61,15 @@ public class PrepararPedido extends Proceso{
         while (true) {
             int numRand = random.nextInt(200); // Generar un índice aleatorio
             Casilleros casillero = eCommerce.getCasillero(numRand);
-                if (verifVacio(casillero)) {
-                    return casillero;
-                }
+            if (verifVacio(casillero)) {
+                return casillero;
+            }
         }
     }
 
-    @Override
-    public void run() {
-        // Buscar un casillero libre
-        while(true){
-            try{
-                Pedido pedido_cargar = null;
-                    if(!pedidosIniciales.isEmpty()){
-                        pedido_cargar = pedidosIniciales.remove(0);
-                    }
-
-                if(pedido_cargar != null && !pedidosIniciales.isEmpty()){
-                    Casilleros casillero = buscarCasilleroLibre();
-                     
-                        //Asignacionaciones
-                        casillero.setPedido(pedido_cargar);
-                        pedido_cargar.setCasilleroAsociado(casillero);
-                        System.out.println(Thread.currentThread().getName() + " asignó el pedido: " + pedido_cargar);
-
-                        //Cambio de estados de casillero y pedido
-                        casillero.setEstado(EstadoCasillero.OCUPADO);
-                        pedido_cargar.setEstado(EstadoPedido.EN_PREPARACION);
-
-                        //Cargado al registro de preparacion
-                        eCommerce.getRegistroPedidos().addPreparacion(pedido_cargar);
-
-                    Thread.sleep(10);//Simula el tiempo de preparación del pedido    
-                }
-                else{
-                    break;
-                }
-            } catch (InterruptedException e){
-                System.out.println(Thread.currentThread().getName() + " interrumpido.");
-                Thread.currentThread().interrupt();
-                break;
-            }
-        }
+    private Pedido buscarPedido(){
+        Pedido pedido = pedidosIniciales.remove(0); // Tomar el pedido y eliminarlo de la lista de pedidos iniciales
+        System.out.println(Thread.currentThread().getName() + " agarro el pedido " + pedido.getId());
+        return pedido;
     }
 }
