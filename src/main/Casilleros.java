@@ -51,7 +51,7 @@ public class Casilleros{
         this.pedido = null;
     }
 
-    public int getIdCasillero() {
+    public int getId() {
         return idCasillero;
     }
 }

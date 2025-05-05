@@ -53,7 +53,7 @@ public class Pedido {
         return casilleroAsociado;
     }
 
-    public int getIdPedido() {
+    public int getId() {
         return idPedido;
     }
 }
