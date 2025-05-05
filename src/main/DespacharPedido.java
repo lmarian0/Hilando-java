@@ -58,7 +58,6 @@ public class DespacharPedido extends Proceso{
 
     public boolean verificarDatos(){
         ThreadLocalRandom probabilidad = ThreadLocalRandom.current();
-        probabilidad.nextDouble(1);
         return probabilidad.nextDouble() <= 0.85;
     }
 }
