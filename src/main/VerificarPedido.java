@@ -21,18 +21,17 @@ public class VerificarPedido extends Proceso{
                 TimeUnit.MILLISECONDS.sleep(100);
                 if (!lista.isEmpty()) {
                     Pedido pedido; // Declarar la variable fuera del bloque synchronized
-                    synchronized (controlverificacion) {
+
+                    synchronized(controlverificacion){
                         int indiceAleatorio = ThreadLocalRandom.current().nextInt(lista.size());
                         pedido = lista.get(indiceAleatorio); // Asignar el valor dentro del bloque synchronized
-                    }
-
-                    eCommerce.getRegistroPedidos().getEntregados().remove(pedido);
-                    synchronized(controlverificacion){
                         if (verificarDatos()) {
                             // Se verifica si el pedido fue entregado
                             eCommerce.getRegistroPedidos().getVerificados().add(pedido);
+                            eCommerce.getRegistroPedidos().getEntregados().remove(pedido);
                         } else {
                             eCommerce.getRegistroPedidos().getFallidos().add(pedido);
+                            eCommerce.getRegistroPedidos().getEntregados().remove(pedido);
                         }
 
 

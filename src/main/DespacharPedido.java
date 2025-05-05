@@ -27,8 +27,6 @@ public class DespacharPedido extends Proceso{
                 synchronized(controlPedido){
                     int index = ThreadLocalRandom.current().nextInt(lista.size());
                     pedido = lista.get(index);
-                }
-                synchronized(controlPedido){
                     if (verificarDatos() && pedido.getEstado()==EstadoPedido.EN_PREPARACION){
                         liberarCasillero(pedido);
                         pedido.setEstado(EstadoPedido.EN_TRANSITO);

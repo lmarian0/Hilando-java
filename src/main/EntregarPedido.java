@@ -35,14 +35,16 @@ public class EntregarPedido extends Proceso{
 
         try {
             if (pedidosEnTransito.isEmpty()) {
-                return; // No hay pedidos en tránsito
+                TimeUnit.MILLISECONDS.sleep(2000);
+                System.out.println("No hay pedidos en transito"); // No hay pedidos en tránsito
             }
     
                 if (pedidosEnTransito.isEmpty()) return;
             
-                int indiceAleatorio = random.nextInt(pedidosEnTransito.size());
-                Pedido pedido = pedidosEnTransito.get(indiceAleatorio);
+                
                 synchronized(controltransito){
+                    int indiceAleatorio = random.nextInt(pedidosEnTransito.size());
+                    Pedido pedido = pedidosEnTransito.get(indiceAleatorio);
                     if (verificarDatos()) { // 90% de éxito
                         eCommerce.getRegistroPedidos().delTransito(pedido);
                         eCommerce.getRegistroPedidos().addEntregados(pedido);
