@@ -8,6 +8,7 @@ public class DespacharPedido extends Proceso{
     public DespacharPedido(EmpresaLogistica eCommerce) {
         super(eCommerce);
     }
+    private Object controlPedido = new Object(); // Objeto de control para la sincronización
 
     @Override
     public void run() {
@@ -23,23 +24,27 @@ public class DespacharPedido extends Proceso{
                     System.out.println("No hay pedidos, a dormir...");
                     continue;
                 }
-                synchronized(eCommerce.getRegistroPedidos()){
+                synchronized(controlPedido){
                     int index = ThreadLocalRandom.current().nextInt(lista.size());
                     pedido = lista.get(index);
                 }
-                if (verificarDatos() && pedido.getEstado()==EstadoPedido.EN_PREPARACION){
-                    liberarCasillero(pedido);
-                    System.out.println(Thread.currentThread().getName() + " asignó el pedido" + pedido.getId() + "a la lista en transito " );
-                    pedido.setEstado(EstadoPedido.EN_TRANSITO);
-                    eCommerce.getRegistroPedidos().delPreparacion(pedido);
-                    eCommerce.getRegistroPedidos().addTransito(pedido);
+                synchronized(controlPedido){
+                    if (verificarDatos() && pedido.getEstado()==EstadoPedido.EN_PREPARACION){
+                        liberarCasillero(pedido);
+                        pedido.setEstado(EstadoPedido.EN_TRANSITO);
+                        eCommerce.getRegistroPedidos().delPreparacion(pedido);
+                        eCommerce.getRegistroPedidos().addTransito(pedido);
+                    }
+                    else {
+                        marcarCasilleroFueraDeServicio(pedido);
+                        eCommerce.getRegistroPedidos().delPreparacion(pedido);
+                        eCommerce.getRegistroPedidos().addFallidos(pedido);
+                    }
+
+
                 }
-                else {
-                    marcarCasilleroFueraDeServicio(pedido);
-                    eCommerce.getRegistroPedidos().delPreparacion(pedido);
-                    eCommerce.getRegistroPedidos().addFallidos(pedido);
-                }
-                TimeUnit.MILLISECONDS.sleep(200);
+                
+                TimeUnit.MILLISECONDS.sleep(100);
             }
 
         } catch (InterruptedException e) {

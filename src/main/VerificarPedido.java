@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 public class VerificarPedido extends Proceso{
     private List<Pedido> lista= eCommerce.getRegistroPedidos().getEntregados();
-    private Object controlPedido = new Object(); // Objeto de control para la sincronización
+    private Object controlverificacion = new Object(); // Objeto de control para la sincronización
     public VerificarPedido(EmpresaLogistica eCommerce) {
         super(eCommerce);
     }
@@ -18,24 +18,29 @@ public class VerificarPedido extends Proceso{
             System.out.println("Verificando pedidos...");
             System.out.println(lista.size() + " pedidos entregados para verificar.");
             while (!Thread.currentThread().isInterrupted()) {
-                TimeUnit.MILLISECONDS.sleep(10);
+                TimeUnit.MILLISECONDS.sleep(100);
                 if (!lista.isEmpty()) {
                     Pedido pedido; // Declarar la variable fuera del bloque synchronized
-                    synchronized (controlPedido) {
+                    synchronized (controlverificacion) {
                         int indiceAleatorio = ThreadLocalRandom.current().nextInt(lista.size());
                         pedido = lista.get(indiceAleatorio); // Asignar el valor dentro del bloque synchronized
                     }
 
                     eCommerce.getRegistroPedidos().getEntregados().remove(pedido);
-                    if (verificarDatos()) {
-                        // Se verifica si el pedido fue entregado
-                        eCommerce.getRegistroPedidos().getVerificados().add(pedido);
-                    } else {
-                        eCommerce.getRegistroPedidos().getFallidos().add(pedido);
+                    synchronized(controlverificacion){
+                        if (verificarDatos()) {
+                            // Se verifica si el pedido fue entregado
+                            eCommerce.getRegistroPedidos().getVerificados().add(pedido);
+                        } else {
+                            eCommerce.getRegistroPedidos().getFallidos().add(pedido);
+                        }
+
+
                     }
+                    
                 }else{
                     // Si no hay pedidos en la lista, esperar un momento antes de volver a verificar
-                    TimeUnit.MILLISECONDS.sleep(1000);
+                    TimeUnit.MILLISECONDS.sleep(100);
                 }
             }
 

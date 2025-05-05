@@ -35,7 +35,6 @@ public class PrepararPedido extends Proceso{
                     casillero.setPedido(pedido); // Asignar el pedido al casillero
                     pedido.setCasilleroAsociado(casillero);
                     eCommerce.getRegistroPedidos().addPreparacion(pedido);
-                    System.out.println(Thread.currentThread().getName() + " guardó el pedido " + pedido.getId() + " en el casillero " + casillero.getId());
                     TimeUnit.MILLISECONDS.sleep(100); // Simular tiempo de preparación del pedido
                     
                     
@@ -71,8 +70,11 @@ public class PrepararPedido extends Proceso{
     }
 
     private Pedido buscarPedido(){
-        Pedido pedido = pedidosIniciales.remove(0); // Tomar el pedido y eliminarlo de la lista de pedidos iniciales
-        System.out.println(Thread.currentThread().getName() + " agarro el pedido " + pedido.getId());
-        return pedido;
+        synchronized(control){
+            Pedido pedido = pedidosIniciales.remove(0); // Tomar el pedido y eliminarlo de la lista de pedidos iniciales
+            System.out.println(Thread.currentThread().getName() + " agarro el pedido " + pedido.getId());
+            return pedido;
+        }
+        
     }
 }

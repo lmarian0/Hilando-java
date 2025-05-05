@@ -15,6 +15,7 @@ public class EntregarPedido extends Proceso{
         super(eCommerce);
         this.demoraE = demoraE;
     }
+    private Object controltransito = new Object(); // Objeto de control para la sincronización
 
 
     @Override
@@ -32,27 +33,37 @@ public class EntregarPedido extends Proceso{
     public void procesarEntrega() {
         List <Pedido> pedidosEnTransito = eCommerce.getRegistroPedidos().getTransito();
 
-        if (pedidosEnTransito.isEmpty()) {
-            return; // No hay pedidos en tránsito
-        }
-
-            if (pedidosEnTransito.isEmpty()) return;
-        
-            int indiceAleatorio = random.nextInt(pedidosEnTransito.size());
-            Pedido pedido = pedidosEnTransito.get(indiceAleatorio);
-        
-            if (verificarDatos()) { // 90% de éxito
-                eCommerce.getRegistroPedidos().delTransito(pedido);
-                eCommerce.getRegistroPedidos().addEntregados(pedido);
-                pedido.setEstado(EstadoPedido.ENTREGADO);
-                
-                // Liberar casillero aquí (dentro del bloque sincronizado)
-                pedido.getCasilleroAsociado().liberar();
-            } else { // 10% de fallo
-                eCommerce.getRegistroPedidos().delTransito(pedido);
-                eCommerce.getRegistroPedidos().addFallidos(pedido);
-                pedido.setEstado(EstadoPedido.FALLIDO);
+        try {
+            if (pedidosEnTransito.isEmpty()) {
+                return; // No hay pedidos en tránsito
             }
+    
+                if (pedidosEnTransito.isEmpty()) return;
+            
+                int indiceAleatorio = random.nextInt(pedidosEnTransito.size());
+                Pedido pedido = pedidosEnTransito.get(indiceAleatorio);
+                synchronized(controltransito){
+                    if (verificarDatos()) { // 90% de éxito
+                        eCommerce.getRegistroPedidos().delTransito(pedido);
+                        eCommerce.getRegistroPedidos().addEntregados(pedido);
+                        pedido.setEstado(EstadoPedido.ENTREGADO);
+                        
+                        // Liberar casillero aquí (dentro del bloque sincronizado)
+                        pedido.getCasilleroAsociado().liberar();
+                    } else { // 10% de fallo
+                        eCommerce.getRegistroPedidos().delTransito(pedido);
+                        eCommerce.getRegistroPedidos().addFallidos(pedido);
+                        pedido.setEstado(EstadoPedido.FALLIDO);
+                    }
+                    TimeUnit.MILLISECONDS.sleep(100);
+                }
+            
+        } catch (Exception e) {
+            Thread.currentThread().interrupt(); // Restablecer el estado de interrupción
+
+        }
+        
+            
     }
 
 
