@@ -32,22 +32,22 @@ public class Main {
 
        //ETAPA 3: EntregaPedido (3 hilos)
 
-       for (int i = 0; i<3; i++){
-        Thread entrega = new Thread(new EntregarPedido(empresa,1), "Delivety_thread " + (i+1));
+        for (int i = 0; i<3; i++){
+        Thread entrega = new Thread(new EntregarPedido(empresa,1), "Delivery_thread " + (i+1));
         entrega.start();
        }
 
        //ETAPA 4: VerificarPedido (2 hilos)
 
-       for (int i = 0; i<2; i++){
+      /*  for (int i = 0; i<2; i++){
         Thread verificacion = new Thread(new VerificarPedido(empresa), "Verification_thread " + (i+1));
         verificacion.start();
-       }
+       }*/
 
        try{
-        Thread.sleep(10000); // Simular tiempo de ejecucion del programa
+        Thread.sleep(20000); // Simular tiempo de ejecucion del programa
        } catch(InterruptedException e){
-        e.printStackTrace();
+        System.out.println("Finalizo el registro");
        }
 
        logThread.interrupt();

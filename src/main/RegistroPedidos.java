@@ -22,59 +22,59 @@ public class RegistroPedidos {
     }
 
     // -----------------------------------------------------------------------------------------------
-    public List<Pedido> getPreparacion(){
+    public synchronized List<Pedido> getPreparacion(){
         return enPreparacion;
     }
-    public List<Pedido> getEntregados(){
+    public synchronized List<Pedido> getEntregados(){
         return entregados;
     }
-    public List<Pedido> getTransito(){
+    public synchronized List<Pedido> getTransito(){
         return enTransito;
     }
-    public List<Pedido> getFallidos(){
+    public synchronized List<Pedido> getFallidos(){
         return fallidos;
     }
-    public List<Pedido> getVerificados(){
+    public synchronized List<Pedido> getVerificados(){
         return verificados;
     }
     //
      //             ⊂(◉‿◉)つ
     //-----------------------------------------------------------------------------------------------
-    public void addPreparacion(Pedido pedido){
+    public synchronized void addPreparacion(Pedido pedido){
         enPreparacion.add(pedido);
 
     }
-    public void addEntregados (Pedido pedido){
+    public synchronized void addEntregados (Pedido pedido){
         entregados.add(pedido);
     }
-    public void addTransito (Pedido pedido){
+    public synchronized void addTransito (Pedido pedido){
         enTransito.add(pedido);
     }
-    public void addFallidos (Pedido pedido){
+    public synchronized void addFallidos (Pedido pedido){
         fallidos.add(pedido);
     }
-    public void addVerificados(Pedido pedido){
+    public synchronized void addVerificados(Pedido pedido){
         verificados.add(pedido);
     }
 
     //------------------------------------------------------------------------------------------------
-    public void delPreparacion (Pedido pedido){
+    public synchronized void delPreparacion (Pedido pedido){
         enPreparacion.remove(pedido);
 
     }
-    public void delEntregados (Pedido pedido){
+    public synchronized void delEntregados (Pedido pedido){
         entregados.remove(pedido);
     }
 
-    public void delTransito (Pedido pedido){
+    public synchronized void delTransito (Pedido pedido){
         enTransito.remove(pedido);
     }
 
-    public void delFallidos (Pedido pedido){
+    public synchronized void delFallidos (Pedido pedido){
         fallidos.remove(pedido);
     }
 
-    public void delVerificados(Pedido pedido){
+    public synchronized void delVerificados(Pedido pedido){
         verificados.remove(pedido);
     }
 

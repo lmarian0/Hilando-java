@@ -8,7 +8,7 @@ public class LogEstadisticas implements Runnable {
 
     public LogEstadisticas(EmpresaLogistica empresa){
         this.empresa = empresa;
-        this.startTime = System.currentTimeMillis(); //registra la hora de tu pc
+        this.startTime = System.currentTimeMillis(); 
     }
 
     @Override
@@ -26,10 +26,11 @@ public class LogEstadisticas implements Runnable {
                     writer.newLine();
                     writer.flush();
 
-                    Thread.sleep(200);
+                    Thread.sleep(200); //Registra cada 200 ms
                 }
                 catch(InterruptedException e){
-                    Thread.currentThread().interrupted();
+                    Thread.interrupted();
+                    break;
                 }
             }
 
