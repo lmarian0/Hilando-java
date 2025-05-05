@@ -32,8 +32,8 @@ public class Main {
 
        //ETAPA 3: EntregaPedido (3 hilos)
 
-       for (int i = 0; i<3; i++){
-        Thread entrega = new Thread(new EntregarPedido(empresa,1), "Delivety_thread " + (i+1));
+        for (int i = 0; i<3; i++){
+        Thread entrega = new Thread(new EntregarPedido(empresa,1), "Delivery_thread " + (i+1));
         entrega.start();
        }
 

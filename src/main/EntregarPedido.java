@@ -36,7 +36,6 @@ public class EntregarPedido extends Proceso{
             return; // No hay pedidos en tránsito
         }
 
-        synchronized (pedidosEnTransito) {
             if (pedidosEnTransito.isEmpty()) return;
         
             int indiceAleatorio = random.nextInt(pedidosEnTransito.size());
@@ -54,8 +53,8 @@ public class EntregarPedido extends Proceso{
                 eCommerce.getRegistroPedidos().addFallidos(pedido);
                 pedido.setEstado(EstadoPedido.FALLIDO);
             }
-        }
     }
+
 
     public boolean verificarDatos(){
         return random.nextDouble() <= 0.9;
