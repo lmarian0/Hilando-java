@@ -5,50 +5,52 @@ public class Casilleros{
     private int contadorOcupaciones;
     private Pedido pedido; 
     private int idCasillero;
+    private final Object OcupationKey;
 
     public Casilleros(int idCasillero){
         this.estado = EstadoCasillero.VACIO;
         this.contadorOcupaciones = 0;
         this.pedido = null;
         this.idCasillero = idCasillero;
+        OcupationKey = new Object();
     }
 
     public boolean esVacio(){
         return estado == EstadoCasillero.VACIO;
     }
 
-    public synchronized void setEstado(EstadoCasillero estado_seteado){
+    public void setEstado(EstadoCasillero estado_seteado){
         this.estado = estado_seteado;
     }
-/**
- * setea el pediddo que llego al casillero y cambia el estado a OCUPADO. Aumentado el contador de ocupaciones
- * @param pedido_arrivado
- */
-    public synchronized void setPedido(Pedido pedido_arrivado){
-        if(estado == EstadoCasillero.OCUPADO){
-            System.out.println("El casillero ya esta ocupado.");
-            return;
+
+    public void setPedido(Pedido pedido_arrivado){
+        synchronized(OcupationKey){
+            if(getEstado() == EstadoCasillero.VACIO){
+                setEstado(EstadoCasillero.OCUPADO);
+                this.pedido = pedido_arrivado;
+                this.contadorOcupaciones++;
+            }
         }
-        this.pedido = pedido_arrivado;
-        setEstado(EstadoCasillero.OCUPADO);
-        contadorOcupaciones++;
     }
 
-    public synchronized Pedido getPedido(){
-        return pedido;
+    public Pedido getPedido(){
+        return this.pedido;
     }
 
-    public synchronized EstadoCasillero getEstado(){
-        return estado;
+    public EstadoCasillero getEstado(){
+        return this.estado;
     }
 
     public synchronized int getContadorOcupaciones(){
-        return contadorOcupaciones;
+        return this.contadorOcupaciones;
     }
 
     public synchronized void liberar() {
-        this.estado = EstadoCasillero.VACIO;
-        this.pedido = null;
+        if(getEstado() == EstadoCasillero.OCUPADO){
+            setEstado(EstadoCasillero.VACIO);
+            System.out.println("Se desocupo el casillero: " + getId());
+            this.pedido = null;
+        }
     }
 
     public int getId() {
