@@ -31,42 +31,34 @@ public class EntregarPedido extends Proceso{
 
     public void procesarEntrega() {
         List <Pedido> pedidosEnTransito;
-
+        Pedido pedido;
         synchronized(eCommerce.getRegistroPedidos()){
             pedidosEnTransito = eCommerce.getRegistroPedidos().getTransito();
             if (pedidosEnTransito.isEmpty()) { 
                 return;
             }
-        }
-
-        Pedido pedido;
-        synchronized (eCommerce.getRegistroPedidos()) {
             int indiceAleatorio = random.nextInt(pedidosEnTransito.size());
             pedido = pedidosEnTransito.get(indiceAleatorio);
-        }
-        
-        synchronized (pedido) {
-            if (verificarDatos()) { // 90% de éxito
-                synchronized (eCommerce.getRegistroPedidos()) {
+
+            synchronized (pedido) {
+                if (verificarDatos()) { // 90% de éxito
                     eCommerce.getRegistroPedidos().delTransito(pedido);
                     eCommerce.getRegistroPedidos().addEntregados(pedido);
-                    System.out.println("entre entregar--------------------------------------------------");
-                }
-                pedido.setEstado(EstadoPedido.ENTREGADO);
-    
-                // Liberar casillero asociado
-                synchronized (pedido.getCasilleroAsociado()) {
+                    System.out.println(Thread.currentThread().getName() + " entrego el pedido " + pedido.getId() + " del casillero " + pedido.getCasilleroAsociado().getId());
+                    pedido.setEstado(EstadoPedido.ENTREGADO);
+        
+                    // Liberar casillero asociado
                     pedido.getCasilleroAsociado().liberar();
-                    System.out.println("entre entregar1------------------------------------------------");
-                }
-            } else { // 10% de fallo
-                synchronized (eCommerce.getRegistroPedidos()) {
+                    System.out.println("Casillero liberado:");
+                } else { // 10% de fallo
                     eCommerce.getRegistroPedidos().delTransito(pedido);
                     eCommerce.getRegistroPedidos().addFallidos(pedido);
+                    
+                    pedido.setEstado(EstadoPedido.FALLIDO);
                 }
-                pedido.setEstado(EstadoPedido.FALLIDO);
             }
         }
+        
     }
     
 

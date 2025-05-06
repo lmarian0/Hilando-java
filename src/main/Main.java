@@ -8,7 +8,7 @@ public class Main {
        List<Thread> threads = new ArrayList<>(); // Lista para almacenar los hilos
 
        //Simula la llegada de 500 pedidos a la empresa
-       for(int i = 0; i<500; i++){
+       for(int i = 1; i<=500; i++){
         Pedido pedido = new Pedido(i);
         nuevos_pedidos.add(pedido);
        }
@@ -37,7 +37,7 @@ public class Main {
        //ETAPA 3: EntregaPedido (3 hilos)
 
         for (int i = 0; i<3; i++){
-        Thread entrega = new Thread(new EntregarPedido(empresa,1), "Delivery_thread " + (i+1));
+        Thread entrega = new Thread(new EntregarPedido(empresa,10), "Delivery_thread " + (i+1));
         entrega.start();
         threads.add(entrega);
        }

@@ -55,12 +55,16 @@ public class LogEstadisticas implements Runnable {
         // Estadísticas de casilleros
         writer.write("=== Estadísticas de Casilleros ===");
         writer.newLine();
+        int count = 0;
         for (int i = 0; i < 200; i++) {
             Casilleros casillero = empresa.getCasillero(i);
             writer.write("Casillero " + i + ": Ocupaciones totales = " + casillero.getContadorOcupaciones());
             writer.newLine();
+            count += casillero.getContadorOcupaciones();
         }
-
+        writer.write("Total de ocupaciones en casilleros: " + count);
+        writer.newLine();
+        writer.write("Robos a deliberys= " + (500-count));
         writer.flush();
     }
 }

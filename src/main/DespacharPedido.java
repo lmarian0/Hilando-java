@@ -20,7 +20,7 @@ public class DespacharPedido extends Proceso{
                 List<Pedido> lista= eCommerce.getRegistroPedidos().getPreparacion();
 
                 if (lista.isEmpty()){
-                    TimeUnit.MILLISECONDS.sleep(100);
+                    TimeUnit.MILLISECONDS.sleep(10);
                     //System.out.println("No hay pedidos, a dormir...");
                     continue;
                 }
@@ -46,7 +46,7 @@ public class DespacharPedido extends Proceso{
 
                     }
                 }
-                TimeUnit.MILLISECONDS.sleep(200);
+                TimeUnit.MILLISECONDS.sleep(14);
             }catch (InterruptedException e) {
                 Thread.currentThread().interrupt(); // Restablecer el estado de interrupción
                 break;

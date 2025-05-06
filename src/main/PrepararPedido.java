@@ -14,7 +14,6 @@ public class PrepararPedido extends Proceso{
 
     }
 
-    Object control = new Object(); // Objeto de control para la sincronización
 
     @Override
     public void run() {
@@ -33,7 +32,7 @@ public class PrepararPedido extends Proceso{
                     pedido.setCasilleroAsociado(casillero);
                     eCommerce.getRegistroPedidos().addPreparacion(pedido);
                     System.out.println(Thread.currentThread().getName() + " preparo el pedido " + pedido.getId() + " en el casillero " + casillero.getId());
-                    TimeUnit.MILLISECONDS.sleep(100); // Simular tiempo de preparación del pedido
+                    TimeUnit.MILLISECONDS.sleep(14); // Simular tiempo de preparación del pedido
                     
                     
                 } else {
@@ -61,11 +60,14 @@ public class PrepararPedido extends Proceso{
         throw new IllegalStateException("No hay mas");
     }
 
-    private synchronized Pedido buscarPedido() {
-        if (pedidosIniciales.isEmpty()) {
-            throw new IllegalStateException("No hay más pedidos en la lista.");
+    private Pedido buscarPedido() {
+        synchronized(pedidosIniciales) {
+            if (pedidosIniciales.isEmpty()) {
+                throw new IllegalStateException("No hay más pedidos en la lista.");
+            }
+            Pedido pedido = pedidosIniciales.remove(0);
+            return pedido;
         }
-        Pedido pedido = pedidosIniciales.remove(0);
-        return pedido;
+        
     }
 }

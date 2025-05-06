@@ -27,11 +27,9 @@ public class VerificarPedido extends Proceso{
                 synchronized (eCommerce.getRegistroPedidos()) {
                     int index = ThreadLocalRandom.current().nextInt(lista.size());
                     pedido = lista.get(index);
-                }
-    
-                // Sincronizar el acceso al pedido
-                synchronized (pedido) {
-                    synchronized (eCommerce.getRegistroPedidos()) {
+
+                    // Sincronizar el acceso al pedido
+                    synchronized (pedido) {
                         eCommerce.getRegistroPedidos().delEntregados(pedido);
                         if (verificarDatos()) {
                             eCommerce.getRegistroPedidos().addVerificados(pedido);
@@ -42,7 +40,7 @@ public class VerificarPedido extends Proceso{
                         }
                     }
                 }
-                TimeUnit.MILLISECONDS.sleep(200);
+                TimeUnit.MILLISECONDS.sleep(14);
             }catch (InterruptedException e) {
             Thread.currentThread().interrupt(); // Restablecer el estado de interrupción
             break;
