@@ -32,7 +32,7 @@ public class PrepararPedido extends Proceso{
                     pedido.setCasilleroAsociado(casillero);
                     eCommerce.getRegistroPedidos().addPreparacion(pedido);
                     System.out.println(Thread.currentThread().getName() + " preparo el pedido " + pedido.getId() + " en el casillero " + casillero.getId());
-                    TimeUnit.MILLISECONDS.sleep(14); // Simular tiempo de preparación del pedido
+                    TimeUnit.MILLISECONDS.sleep(50); // Simular tiempo de preparación del pedido
                     
                     
                 } else {

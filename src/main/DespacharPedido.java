@@ -46,7 +46,7 @@ public class DespacharPedido extends Proceso{
 
                     }
                 }
-                TimeUnit.MILLISECONDS.sleep(14);
+                TimeUnit.MILLISECONDS.sleep(50);
             }catch (InterruptedException e) {
                 Thread.currentThread().interrupt(); // Restablecer el estado de interrupción
                 break;

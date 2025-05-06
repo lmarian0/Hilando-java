@@ -40,7 +40,7 @@ public class VerificarPedido extends Proceso{
                         }
                     }
                 }
-                TimeUnit.MILLISECONDS.sleep(14);
+                TimeUnit.MILLISECONDS.sleep(100);
             }catch (InterruptedException e) {
             Thread.currentThread().interrupt(); // Restablecer el estado de interrupción
             break;
