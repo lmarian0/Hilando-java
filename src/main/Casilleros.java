@@ -5,39 +5,35 @@ public class Casilleros{
     private int contadorOcupaciones;
     private Pedido pedido; 
     private int idCasillero;
-    private final Object OcupationKey;
 
     public Casilleros(int idCasillero){
         this.estado = EstadoCasillero.VACIO;
         this.contadorOcupaciones = 0;
         this.pedido = null;
         this.idCasillero = idCasillero;
-        OcupationKey = new Object();
     }
 
-    public boolean esVacio(){
+    public synchronized boolean esVacio(){
         return estado == EstadoCasillero.VACIO;
     }
 
-    public void setEstado(EstadoCasillero estado_seteado){
+    public synchronized void setEstado(EstadoCasillero estado_seteado){
         this.estado = estado_seteado;
     }
 
-    public void setPedido(Pedido pedido_arrivado){
-        synchronized(OcupationKey){
-            if(getEstado() == EstadoCasillero.VACIO){
-                setEstado(EstadoCasillero.OCUPADO);
-                this.pedido = pedido_arrivado;
-                this.contadorOcupaciones++;
-            }
+    public synchronized void setPedido(Pedido pedido_arrivado){
+        if(getEstado() == EstadoCasillero.VACIO){
+            setEstado(EstadoCasillero.OCUPADO);
+            this.pedido = pedido_arrivado;
+            this.contadorOcupaciones++;
         }
     }
 
-    public Pedido getPedido(){
+    public synchronized Pedido getPedido(){
         return this.pedido;
     }
 
-    public EstadoCasillero getEstado(){
+    public synchronized EstadoCasillero getEstado(){
         return this.estado;
     }
 
@@ -53,7 +49,7 @@ public class Casilleros{
         }
     }
 
-    public int getId() {
+    public synchronized int getId() {
         return idCasillero;
     }
 }

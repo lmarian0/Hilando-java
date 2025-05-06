@@ -1,6 +1,7 @@
 //package main;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class VerificarPedido extends Proceso{
@@ -9,44 +10,47 @@ public class VerificarPedido extends Proceso{
     }
     @Override
     public void run() {
-
-        /*
-         * Agarrar un pedido aleatorio de la lista preparacion
-         * 
-         * 
-         */
-        Pedido pedido = null;
-        List<Pedido> lista= eCommerce.getRegistroPedidos().getEntregados();
-
-        if(lista.isEmpty()){
+        while (!Thread.currentThread().isInterrupted()) {
             try {
-                System.out.println("No hay pedidos para despachar. Esperando...");
-                wait(); // El hilo se pone en espera hasta que otro hilo notifique
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                System.out.println("Hilo interrumpido mientras estaba en espera.");
+                List<Pedido> lista;
+    
+                // Sincronizar el acceso a la lista de pedidos entregados
+                synchronized (eCommerce.getRegistroPedidos()) {
+                    lista = eCommerce.getRegistroPedidos().getEntregados();
+                    if (lista.isEmpty()) {
+                        continue;
+                    }
+                }
+    
+                // Seleccionar un pedido aleatorio
+                Pedido pedido;
+                synchronized (eCommerce.getRegistroPedidos()) {
+                    int index = ThreadLocalRandom.current().nextInt(lista.size());
+                    pedido = lista.get(index);
+                }
+    
+                // Sincronizar el acceso al pedido
+                synchronized (pedido) {
+                    synchronized (eCommerce.getRegistroPedidos()) {
+                        eCommerce.getRegistroPedidos().delEntregados(pedido);
+                        if (verificarDatos()) {
+                            eCommerce.getRegistroPedidos().addVerificados(pedido);
+                            System.out.println("Pedido verificado correctamente.");
+                        } else {
+                            eCommerce.getRegistroPedidos().addFallidos(pedido);
+                            System.out.println("Pedido fallido en la verificación.");
+                        }
+                    }
+                }
+                TimeUnit.MILLISECONDS.sleep(200);
+            }catch (InterruptedException e) {
+            Thread.currentThread().interrupt(); // Restablecer el estado de interrupción
+            break;
             }
-        }
-        else{
-            int index = ThreadLocalRandom.current().nextInt(lista.size());
-            pedido = lista.get(index);
-            if (verificarDatos()){
-                eCommerce.getRegistroPedidos().delEntregados(pedido);
-                eCommerce.getRegistroPedidos().addVerificados(pedido);
-            }
-            else {
-                eCommerce.getRegistroPedidos().delEntregados(pedido);
-                eCommerce.getRegistroPedidos().addFallidos(pedido);
-            }
-        }   
-    }
-
-   
-
-    private boolean verificarDatos(){
-        ThreadLocalRandom probabilidad = ThreadLocalRandom.current();
-        probabilidad.nextDouble(1);
-        return probabilidad.nextDouble() <= 0.95;
+        } 
     }
     
+    private boolean verificarDatos() {
+        return ThreadLocalRandom.current().nextDouble() <= 0.95;
+    }
 }

@@ -30,31 +30,45 @@ public class EntregarPedido extends Proceso{
     }
 
     public void procesarEntrega() {
-        List <Pedido> pedidosEnTransito = eCommerce.getRegistroPedidos().getTransito();
+        List <Pedido> pedidosEnTransito;
 
-        if (pedidosEnTransito.isEmpty()) {
-            return; // No hay pedidos en tránsito
+        synchronized(eCommerce.getRegistroPedidos()){
+            pedidosEnTransito = eCommerce.getRegistroPedidos().getTransito();
+            if (pedidosEnTransito.isEmpty()) { 
+                return;
+            }
         }
 
-            if (pedidosEnTransito.isEmpty()) return;
-        
+        Pedido pedido;
+        synchronized (eCommerce.getRegistroPedidos()) {
             int indiceAleatorio = random.nextInt(pedidosEnTransito.size());
-            Pedido pedido = pedidosEnTransito.get(indiceAleatorio);
+            pedido = pedidosEnTransito.get(indiceAleatorio);
+        }
         
+        synchronized (pedido) {
             if (verificarDatos()) { // 90% de éxito
-                eCommerce.getRegistroPedidos().delTransito(pedido);
-                eCommerce.getRegistroPedidos().addEntregados(pedido);
+                synchronized (eCommerce.getRegistroPedidos()) {
+                    eCommerce.getRegistroPedidos().delTransito(pedido);
+                    eCommerce.getRegistroPedidos().addEntregados(pedido);
+                    System.out.println("entre entregar--------------------------------------------------");
+                }
                 pedido.setEstado(EstadoPedido.ENTREGADO);
-                
-                // Liberar casillero aquí (dentro del bloque sincronizado)
-                pedido.getCasilleroAsociado().liberar();
+    
+                // Liberar casillero asociado
+                synchronized (pedido.getCasilleroAsociado()) {
+                    pedido.getCasilleroAsociado().liberar();
+                    System.out.println("entre entregar1------------------------------------------------");
+                }
             } else { // 10% de fallo
-                eCommerce.getRegistroPedidos().delTransito(pedido);
-                eCommerce.getRegistroPedidos().addFallidos(pedido);
+                synchronized (eCommerce.getRegistroPedidos()) {
+                    eCommerce.getRegistroPedidos().delTransito(pedido);
+                    eCommerce.getRegistroPedidos().addFallidos(pedido);
+                }
                 pedido.setEstado(EstadoPedido.FALLIDO);
             }
+        }
     }
-
+    
 
     public boolean verificarDatos(){
         return random.nextDouble() <= 0.9;

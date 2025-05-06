@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class EmpresaLogistica{
     private ArrayList<Casilleros> matrizCasilleros;
-    private RegistroPedidos registro = new RegistroPedidos(); //registro de pedidos
+    private RegistroPedidos registro;
 
     public EmpresaLogistica(){
         this.matrizCasilleros = new ArrayList<Casilleros>(200);
@@ -14,18 +14,15 @@ public class EmpresaLogistica{
         }
     }
 
-    public void iniciarProcesos(){
-    }
-
-    public Casilleros getCasillero(int i){
+    public synchronized Casilleros getCasillero(int i){
+        if (i<0 || i>= matrizCasilleros.size()){
+            throw new IllegalArgumentException("Indice invalido: " + i );
+        }
         return matrizCasilleros.get(i);
     }
 
     public RegistroPedidos getRegistroPedidos(){
         return registro;
-    }
-
-    public void generarEstadisticas(){
     }
 
 }

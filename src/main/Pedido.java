@@ -10,46 +10,34 @@ public class Pedido {
     private EstadoPedido estado;           // Estado actual del pedido
     private Casilleros casilleroAsociado;   // Casillero asignado al pedido
     private int idPedido;                  // ID del pedido (no se utiliza en este código, pero puede ser útil para futuras implementaciones)
-    /**
-     * Constructor por defecto. Inicializa el pedido en estado EN_PREPARACION.
-     */
+
     public Pedido(int idPedido) {
         this.estado = EstadoPedido.EN_PREPARACION;
         this.idPedido = idPedido;
-        this.casilleroAsociado = null; // Inicialmente no hay casillero asociado
+        this.casilleroAsociado = null; 
     }
 
     // Métodos de acceso (Getters y Setters)
 
-    /**
-     * Establece el estado del pedido.
-     * @param estado Nuevo estado del pedido (debe ser uno de los valores de EstadoPedido).
-     */
-    public synchronized void setEstado(EstadoPedido estado) {
+    public void setEstado(EstadoPedido estado) {
+        if (estado == null) {
+            throw new IllegalArgumentException("El estado del pedido no puede ser nulo.");
+        }
         this.estado = estado;
     }
 
-    /**
-     * Obtiene el estado actual del pedido.
-     * @return Estado del pedido.
-     */
-    public synchronized EstadoPedido getEstado() {
+    public EstadoPedido getEstado() {
         return estado;
     }
 
-    /**
-     * Asocia un casillero al pedido.
-     * @param casillero Casillero a asociar.
-     */
-    public synchronized void setCasilleroAsociado(Casilleros casillero) {
+    public void setCasilleroAsociado(Casilleros casillero) {
+        if (casillero == null) {
+            throw new IllegalArgumentException("El casillero asociado no puede ser nulo.");
+        }
         this.casilleroAsociado = casillero;
     }
 
-    /**
-     * Obtiene el casillero asociado al pedido.
-     * @return Casillero asociado o null si no tiene.
-     */
-    public synchronized Casilleros getCasilleroAsociado() {
+    public Casilleros getCasilleroAsociado() {
         return casilleroAsociado;
     }
 

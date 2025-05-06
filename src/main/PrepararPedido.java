@@ -6,11 +6,11 @@ import java.util.List;
 
 public class PrepararPedido extends Proceso{
     private Random random = new Random();
-    private List<Pedido> pedidosIniciales = new ArrayList<>(); // Lista de pedidos iniciales
+    private List<Pedido> pedidosIniciales = new ArrayList<>(); 
 
     public PrepararPedido(EmpresaLogistica eCommerce,List<Pedido> pedidosIniciales) {
         super(eCommerce);
-        this.pedidosIniciales = pedidosIniciales; //inicializa la lista de pedidos que llegaron a la empresa
+        this.pedidosIniciales = pedidosIniciales; 
 
     }
 
@@ -18,15 +18,12 @@ public class PrepararPedido extends Proceso{
 
     @Override
     public void run() {
-        while (true) {
+        while (!Thread.currentThread().isInterrupted()) {
             try {
                 Pedido pedido = null;
 
-                // Sincronizar el acceso a la lista de pedidos
-                synchronized (control) {
-                    if (!pedidosIniciales.isEmpty()) {
-                        pedido = buscarPedido(); // Tomar y eliminar el pedido de la lista
-                    }
+                if (!pedidosIniciales.isEmpty()) {
+                    pedido = buscarPedido(); // Tomar y eliminar el pedido de la lista
                 }
 
                 if (pedido != null ) {
@@ -52,22 +49,23 @@ public class PrepararPedido extends Proceso{
 
     private Casilleros buscarCasilleroLibre() {
     
-        while (true) {
+        while (pedidosIniciales.size() > 0) {
             int numRand = random.nextInt(200); // Generar un índice aleatorio
             Casilleros casillero = eCommerce.getCasillero(numRand);
-            synchronized(control){
+            synchronized(casillero){
                 if (casillero.getEstado() == EstadoCasillero.VACIO) {
                     return casillero;
                 }
             }
         }
+        throw new IllegalStateException("No hay mas");
     }
 
-    private Pedido buscarPedido(){
-        
-        Pedido pedido = pedidosIniciales.remove(0); // Tomar el pedido y eliminarlo de la lista de pedidos iniciales
-        System.out.println(Thread.currentThread().getName() + " agarro el pedido " + pedido.getId());
+    private synchronized Pedido buscarPedido() {
+        if (pedidosIniciales.isEmpty()) {
+            throw new IllegalStateException("No hay más pedidos en la lista.");
+        }
+        Pedido pedido = pedidosIniciales.remove(0);
         return pedido;
-        
     }
 }
