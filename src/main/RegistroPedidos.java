@@ -70,21 +70,64 @@ public class RegistroPedidos {
 
 
     public synchronized void addEntregados (Pedido pedido){
-        entregados.add(pedido);
+        if(pedido == null){
+            System.out.println("No se puede agregar un pedido nulo a la lista de pedidos entregados");
+            return;
+        }
+        synchronized (KeyEntrega) {
+            if (entregados.contains(pedido)) {
+                System.out.println("El pedido ya existe en la lista de pedidos entregados");
+                return;
+            }else{
+                entregados.add(pedido);
+                KeyEntrega.notifyAll(); //Notifica a los hilos que esten esperando
+            }
+        }
+
     }
     public  void addTransito (Pedido pedido){
-        synchronized (enTransito){
-            enTransito.add(pedido);
+        if(pedido == null){
+            System.out.println("No se puede agregar un pedido nulo a la lista de pedidos en transito");
+            return;
+        }
+        synchronized (KeyTransito) {
+            if (enTransito.contains(pedido)) {
+                System.out.println("El pedido ya existe en la lista de pedidos en transito");
+                return;
+            }else{
+                enTransito.add(pedido);
+                KeyTransito.notifyAll(); //Notifica a los hilos que esten esperando
+            }
         }
     }
     public void addFallidos (Pedido pedido){
-        synchronized (fallidos){
-            fallidos.add(pedido);
+        if(pedido == null){
+            System.out.println("No se puede agregar un pedido nulo a la lista de pedidos fallidos");
+            return;
+        }
+        synchronized (KeyFallidos) {
+            if (fallidos.contains(pedido)) {
+                System.out.println("El pedido ya existe en la lista de pedidos fallidos");
+                return;
+            }else{
+                fallidos.add(pedido);
+                KeyFallidos.notifyAll(); //Notifica a los hilos que esten esperando
+            }
         }
     }
     public void addVerificados(Pedido pedido){
-        synchronized (verificados){
-            verificados.add(pedido);
+        if(pedido == null){
+            System.out.println("No se puede agregar un pedido nulo a la lista de pedidos verificados");
+            return;
+        }
+        synchronized (KeyVerificados) {
+            if (verificados.contains(pedido)) {
+                System.out.println("El pedido ya existe en la lista de pedidos verificados");
+                return;
+            }else{
+                verificados.add(pedido);
+                KeyVerificados.notifyAll(); //Notifica a los hilos que esten esperando
+            }
         }
     }
 
