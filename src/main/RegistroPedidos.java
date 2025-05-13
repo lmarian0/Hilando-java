@@ -11,7 +11,7 @@ public class RegistroPedidos {
     private List<Pedido> fallidos;
     private List<Pedido> verificados;
 
-    private final Object KeyPreparacion, KeyEntrega, KeyTransito, KeyDespacho, KeyFallidos, KeyVerificados;
+    private final Object KeyPreparacion, KeyEntrega, KeyTransito, KeyFallidos, KeyVerificados;
 
     public RegistroPedidos(){
         this.enPreparacion= new ArrayList<>();
@@ -24,7 +24,6 @@ public class RegistroPedidos {
         this.KeyEntrega = new Object();
         this.KeyVerificados = new Object();
         this.KeyTransito = new Object();
-        this.KeyDespacho = new Object();
         this.KeyFallidos = new Object();
     }
 
@@ -58,14 +57,8 @@ public class RegistroPedidos {
                 return;
             }else{
                 enPreparacion.add(pedido);
-                KeyPreparacion.notifyAll(); //Notifica a los hilos que esten esperando
             }
         }
-    }
-
-    public void delPreparacion (Pedido pedido){
-        enPreparacion.remove(pedido);
-
     }
 
 
@@ -80,7 +73,6 @@ public class RegistroPedidos {
                 return;
             }else{
                 entregados.add(pedido);
-                KeyEntrega.notifyAll(); //Notifica a los hilos que esten esperando
             }
         }
 
@@ -96,7 +88,6 @@ public class RegistroPedidos {
                 return;
             }else{
                 enTransito.add(pedido);
-                KeyTransito.notifyAll(); //Notifica a los hilos que esten esperando
             }
         }
     }
@@ -111,7 +102,6 @@ public class RegistroPedidos {
                 return;
             }else{
                 fallidos.add(pedido);
-                KeyFallidos.notifyAll(); //Notifica a los hilos que esten esperando
             }
         }
     }
@@ -126,34 +116,28 @@ public class RegistroPedidos {
                 return;
             }else{
                 verificados.add(pedido);
-                KeyVerificados.notifyAll(); //Notifica a los hilos que esten esperando
             }
         }
     }
 
     //------------------------------------------------------------------------------------------------
-    public synchronized void delEntregados (Pedido pedido){
-        entregados.remove(pedido);
+
+    public void delPreparacion(Pedido pedido){
+        synchronized (KeyPreparacion){
+            enPreparacion.remove(pedido);
+        }
+    }
+
+    public void delEntregados (Pedido pedido){
+        synchronized (KeyEntrega){
+            entregados.remove(pedido);
+        }
     }
 
     public void delTransito (Pedido pedido){
-        synchronized (enTransito){
+        synchronized (KeyTransito){
             enTransito.remove(pedido);
         }
     }
-
-    public void delFallidos (Pedido pedido){
-        synchronized (fallidos){
-            fallidos.remove(pedido);
-        }
-    }
-
-    public  void delVerificados(Pedido pedido){
-        synchronized (verificados){
-            verificados.remove(pedido);
-        }
-    }
-
-
 
 }
