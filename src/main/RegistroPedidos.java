@@ -22,60 +22,90 @@ public class RegistroPedidos {
     }
 
     // -----------------------------------------------------------------------------------------------
-    public synchronized List<Pedido> getPreparacion(){
-        return enPreparacion;
+    public List<Pedido> getPreparacion(){
+        synchronized (enPreparacion){
+            return enPreparacion;
+        }
     }
-    public synchronized List<Pedido> getEntregados(){
-        return entregados;
+    public List<Pedido> getEntregados(){
+        synchronized (entregados){
+            return entregados;
+        }
     }
-    public synchronized List<Pedido> getTransito(){
-        return enTransito;
+    public List<Pedido> getTransito(){
+        synchronized (enTransito){
+            return enTransito;
+        }
     }
-    public synchronized List<Pedido> getFallidos(){
-        return fallidos;
+    public List<Pedido> getFallidos(){
+        synchronized (fallidos){
+            return fallidos;
+        }
     }
-    public synchronized List<Pedido> getVerificados(){
-        return verificados;
+    public List<Pedido> getVerificados(){
+        synchronized (verificados){
+            return verificados;
+        }
     }
     //
      //             ⊂(◉‿◉)つ
     //-----------------------------------------------------------------------------------------------
-    public synchronized void addPreparacion(Pedido pedido){
-        enPreparacion.add(pedido);
+    public void addPreparacion(Pedido pedido){
+        synchronized (enPreparacion){
+            enPreparacion.add(pedido);
+        }
 
     }
-    public synchronized void addEntregados (Pedido pedido){
-        entregados.add(pedido);
+    public  void addEntregados (Pedido pedido){
+        synchronized (entregados){
+            entregados.add(pedido);
+        }
     }
-    public synchronized void addTransito (Pedido pedido){
-        enTransito.add(pedido);
+    public  void addTransito (Pedido pedido){
+        synchronized (enTransito){
+            enTransito.add(pedido);
+        }
     }
-    public synchronized void addFallidos (Pedido pedido){
-        fallidos.add(pedido);
+    public void addFallidos (Pedido pedido){
+        synchronized (fallidos){
+            fallidos.add(pedido);
+        }
     }
-    public synchronized void addVerificados(Pedido pedido){
-        verificados.add(pedido);
+    public void addVerificados(Pedido pedido){
+        synchronized (verificados){
+            verificados.add(pedido);
+        }
     }
 
     //------------------------------------------------------------------------------------------------
-    public synchronized void delPreparacion (Pedido pedido){
-        enPreparacion.remove(pedido);
+    public void delPreparacion (Pedido pedido){
+        synchronized (enPreparacion){
+            enPreparacion.remove(pedido);
+        }
 
     }
-    public synchronized void delEntregados (Pedido pedido){
-        entregados.remove(pedido);
+    public void delEntregados (Pedido pedido){
+        synchronized (entregados){
+            entregados.remove(pedido);
+        }
     }
 
-    public synchronized void delTransito (Pedido pedido){
-        enTransito.remove(pedido);
+    public void delTransito (Pedido pedido){
+        synchronized (enTransito){
+            enTransito.remove(pedido);
+        }
     }
 
-    public synchronized void delFallidos (Pedido pedido){
-        fallidos.remove(pedido);
+    public void delFallidos (Pedido pedido){
+        synchronized (fallidos){
+            fallidos.remove(pedido);
+        }
     }
 
-    public synchronized void delVerificados(Pedido pedido){
-        verificados.remove(pedido);
+    public  void delVerificados(Pedido pedido){
+        synchronized (verificados){
+            verificados.remove(pedido);
+        }
     }
 
 
