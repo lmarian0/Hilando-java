@@ -11,6 +11,8 @@ public class RegistroPedidos {
     private List<Pedido> fallidos;
     private List<Pedido> verificados;
 
+    private final Object KeyPreparacion, KeyEntrega, KeyTransito, KeyDespacho, KeyFallidos, KeyVerificados;
+
     public RegistroPedidos(){
         this.enPreparacion= new ArrayList<>();
         this.entregados = new ArrayList<>();
@@ -18,48 +20,57 @@ public class RegistroPedidos {
         this.fallidos = new ArrayList<>();
         this.verificados = new ArrayList<>();
 
-
+        this.KeyPreparacion = new Object();
+        this.KeyEntrega = new Object();
+        this.KeyVerificados = new Object();
+        this.KeyTransito = new Object();
+        this.KeyDespacho = new Object();
+        this.KeyFallidos = new Object();
     }
 
     // -----------------------------------------------------------------------------------------------
     public List<Pedido> getPreparacion(){
-        synchronized (enPreparacion){
-            return enPreparacion;
-        }
+        return enPreparacion;
     }
     public List<Pedido> getEntregados(){
-        synchronized (entregados){
-            return entregados;
-        }
+        return entregados;
     }
     public List<Pedido> getTransito(){
-        synchronized (enTransito){
-            return enTransito;
-        }
+        return enTransito;
     }
     public List<Pedido> getFallidos(){
-        synchronized (fallidos){
-            return fallidos;
-        }
+        return fallidos;
     }
     public List<Pedido> getVerificados(){
-        synchronized (verificados){
-            return verificados;
-        }
+        return verificados;
     }
     //
      //             ⊂(◉‿◉)つ
     //-----------------------------------------------------------------------------------------------
     public void addPreparacion(Pedido pedido){
-        synchronized (enPreparacion){
-            enPreparacion.add(pedido);
+        if(pedido == null){
+            System.out.println("No se puede agregar un pedido nulo a la lista de pedidos en preparacion");
+            return;
         }
+        synchronized (KeyPreparacion) {
+            if (enPreparacion.contains(pedido)) {
+                System.out.println("El pedido ya existe en la lista de pedidos en preparacion");
+                return;
+            }else{
+                enPreparacion.add(pedido);
+                KeyPreparacion.notifyAll(); //Notifica a los hilos que esten esperando
+            }
+        }
+    }
+
+    public void delPreparacion (Pedido pedido){
+        enPreparacion.remove(pedido);
 
     }
-    public  void addEntregados (Pedido pedido){
-        synchronized (entregados){
-            entregados.add(pedido);
-        }
+
+
+    public synchronized void addEntregados (Pedido pedido){
+        entregados.add(pedido);
     }
     public  void addTransito (Pedido pedido){
         synchronized (enTransito){
@@ -78,16 +89,8 @@ public class RegistroPedidos {
     }
 
     //------------------------------------------------------------------------------------------------
-    public void delPreparacion (Pedido pedido){
-        synchronized (enPreparacion){
-            enPreparacion.remove(pedido);
-        }
-
-    }
-    public void delEntregados (Pedido pedido){
-        synchronized (entregados){
-            entregados.remove(pedido);
-        }
+    public synchronized void delEntregados (Pedido pedido){
+        entregados.remove(pedido);
     }
 
     public void delTransito (Pedido pedido){
