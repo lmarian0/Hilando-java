@@ -31,7 +31,7 @@ public class DespacharPedido extends Proceso{
                     synchronized(pedido){
                         if (verificarDatos() && pedido.getEstado()==EstadoPedido.EN_PREPARACION){
                             liberarCasillero(pedido);
-                            System.out.println(Thread.currentThread().getName() + " asignó el pedido: " );
+                            System.out.println(Thread.currentThread().getName() + " asignó el pedido: " + pedido.getId());
                             pedido.setEstado(EstadoPedido.EN_TRANSITO);
                             eCommerce.getRegistroPedidos().delPreparacion(pedido);
                             eCommerce.getRegistroPedidos().addTransito(pedido);
