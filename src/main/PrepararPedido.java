@@ -1,14 +1,13 @@
 // package main;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
-import java.util.ArrayList;
-import java.util.List;
 
 public class PrepararPedido extends Proceso{
     private Random random = new Random();
-    private List<Pedido> pedidosIniciales = new ArrayList<>(); 
+    private GeneradorPedidos pedidosIniciales = new GeneradorPedidos(); 
+    private final Object buscador_key = new Object();
 
-    public PrepararPedido(EmpresaLogistica eCommerce,List<Pedido> pedidosIniciales) {
+    public PrepararPedido(EmpresaLogistica eCommerce,GeneradorPedidos pedidosIniciales) {
         super(eCommerce);
         this.pedidosIniciales = pedidosIniciales; 
 
@@ -17,30 +16,17 @@ public class PrepararPedido extends Proceso{
 
     @Override
     public void run() {
-        while (!Thread.currentThread().isInterrupted()) {
+        while (true) {
             try {
-                Pedido pedido = null;
-
-                if (!pedidosIniciales.isEmpty()) {
-                    pedido = buscarPedido(); // Tomar y eliminar el pedido de la lista
+                Pedido pedido = pedidosIniciales.obtenerPedido(); // 2 hilos no pueden tomar un pedido al mismo tiempoo
+                if(pedido == null){
+                    System.out.println("No se puede preparar un pedido nulo");
+                    return;
                 }
-
-                if (pedido != null ) {
-                    Casilleros casillero = buscarCasilleroLibre(); // Buscar un casillero libre
+                ubicarPedido(pedido); // 2 hilos no pueden asignar un casillero al mismo tiempo
+                eCommerce.getRegistroPedidos().addPreparacion(pedido);  
+                TimeUnit.MILLISECONDS.sleep(50);
                     
-                    if (casillero != null) {
-                        casillero.setPedido(pedido); // Asignar el pedido al casillero
-                        pedido.setCasilleroAsociado(casillero);
-                        eCommerce.getRegistroPedidos().addPreparacion(pedido);
-                        System.out.println(Thread.currentThread().getName() + " preparo el pedido " + pedido.getId() + " en el casillero " + casillero.getId());
-                        TimeUnit.MILLISECONDS.sleep(50); // Simular tiempo de preparación del pedido
-                    } else {
-                        System.out.println("No hay casilleros libres para el pedido " + pedido.getId());
-                        break; // Salir del bucle si no hay casilleros libres
-                    }
-                } else {
-                    break; // Si no hay más pedidos, salir del bucle
-                }
             } catch (InterruptedException e) {
                 System.out.println(Thread.currentThread().getName() + " interrumpido.");
                 Thread.currentThread().interrupt();
@@ -49,28 +35,23 @@ public class PrepararPedido extends Proceso{
         }
     }
 
-    private Casilleros buscarCasilleroLibre() {
-    
-        while (pedidosIniciales.size() > 0) {
-            int numRand = random.nextInt(200); // Generar un índice aleatorio
-            Casilleros casillero = eCommerce.getCasillero(numRand);
-            synchronized(casillero){
-                if (casillero.getEstado() == EstadoCasillero.VACIO) {
-                    return casillero;
-                }
-            }
-        }
-        return null; // Si no hay casilleros libres, retornar null
-    }
+    // The `private void ubicarPedido(Pedido pedido)` method is responsible for assigning a casillero
+    // (storage compartment) to a given pedido (order) within the eCommerce system. Here's a breakdown
+    // of what the method does:
+    private void ubicarPedido(Pedido pedido) {
+        synchronized (buscador_key) {
+            while (true) {
+                int numRand = random.nextInt(200);                
+                Casilleros casillero = eCommerce.getCasillero(numRand);
 
-    private Pedido buscarPedido() {
-        synchronized(pedidosIniciales) {
-            if (pedidosIniciales.isEmpty()) {
-                throw new IllegalStateException("No hay más pedidos en la lista.");
-            }
-            Pedido pedido = pedidosIniciales.remove(0);
-            return pedido;
+                if (casillero.getEstado() == EstadoCasillero.VACIO) {
+                    casillero.setPedido(pedido);                        
+                    casillero.setEstado(EstadoCasillero.OCUPADO);       
+                    pedido.setCasilleroAsociado(casillero);
+                    System.out.println(Thread.currentThread().getName() + " ha preparado el pedido " + pedido.getId() + " en el casillero [" + casillero.getId() + "]");
+                    break; 
+                }
+            }   
         }
-        
     }
 }
