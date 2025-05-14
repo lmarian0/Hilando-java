@@ -64,7 +64,7 @@ public class LogEstadisticas implements Runnable {
         }
         writer.write("Total de ocupaciones en casilleros: " + count);
         writer.newLine();
-        writer.write("Robos a deliverys = " + (500-count));
+        writer.write("Robos a deliberys= " + (500-count));
         writer.flush();
     }
 }

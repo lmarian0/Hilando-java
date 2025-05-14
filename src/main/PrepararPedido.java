@@ -27,16 +27,13 @@ public class PrepararPedido extends Proceso{
 
                 if (pedido != null ) {
                     Casilleros casillero = buscarCasilleroLibre(); // Buscar un casillero libre
-                    if (casillero != null) {
-                        casillero.setPedido(pedido); // Asignar el pedido al casillero
-                        pedido.setCasilleroAsociado(casillero);
-                        eCommerce.getRegistroPedidos().addPreparacion(pedido);
-                        System.out.println(Thread.currentThread().getName() + " preparo el pedido " + pedido.getId() + " en el casillero " + casillero.getId());
-                        TimeUnit.MILLISECONDS.sleep(50); // Simular tiempo de preparación del pedido
-                    } else {
-                        System.out.println("No hay casilleros libres para el pedido " + pedido.getId());
-                        break; // Salir del bucle si no hay casilleros libres
-                    }
+                    
+                    casillero.setPedido(pedido); // Asignar el pedido al casillero
+                    pedido.setCasilleroAsociado(casillero);
+                    eCommerce.getRegistroPedidos().addPreparacion(pedido);
+                    System.out.println(Thread.currentThread().getName() + " preparo el pedido " + pedido.getId() + " en el casillero " + casillero.getId());
+                    TimeUnit.MILLISECONDS.sleep(50); // Simular tiempo de preparación del pedido
+                    
                     
                 } else {
                     break; // Si no hay más pedidos, salir del bucle
@@ -60,7 +57,7 @@ public class PrepararPedido extends Proceso{
                 }
             }
         }
-        return null; // Si no hay casilleros libres, retornar null
+        throw new IllegalStateException("No hay mas");
     }
 
     private Pedido buscarPedido() {
