@@ -16,29 +16,40 @@ public class Pedido {
         this.idPedido = idPedido;
         this.casilleroAsociado = null; 
     }
+    private final Object estado_key = new Object();
+    private final Object casillero_key = new Object();
 
     // Métodos de acceso (Getters y Setters)
 
     public void setEstado(EstadoPedido estado) {
-        if (estado == null) {
-            throw new IllegalArgumentException("El estado del pedido no puede ser nulo.");
+        synchronized(estado_key){
+            if (estado == null) {
+                throw new IllegalArgumentException("El estado del pedido no puede ser nulo.");
+            }
+            this.estado = estado;
         }
-        this.estado = estado;
     }
 
     public EstadoPedido getEstado() {
-        return estado;
+        synchronized(estado_key){
+            return estado;
+        }
     }
 
     public void setCasilleroAsociado(Casilleros casillero) {
-        if (casillero == null) {
-            throw new IllegalArgumentException("El casillero asociado no puede ser nulo.");
+        synchronized(casillero_key){
+            if (casillero == null) {
+                throw new IllegalArgumentException("El casillero asociado no puede ser nulo.");
+            }
+            this.casilleroAsociado = casillero;
         }
-        this.casilleroAsociado = casillero;
+        
     }
 
     public Casilleros getCasilleroAsociado() {
-        return casilleroAsociado;
+        synchronized(casillero_key){
+            return casilleroAsociado;
+        }
     }
 
     public int getId() {
