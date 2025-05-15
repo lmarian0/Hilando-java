@@ -41,7 +41,7 @@ public class PrepararPedido extends Proceso{
     private void ubicarPedido(Pedido pedido) {
         synchronized (buscador_key) {
             while (true) {
-                System.out.println(Thread.currentThread().getName() + " - index_key hash: " + System.identityHashCode(buscador_key));
+                //System.out.println(Thread.currentThread().getName() + " - index_key hash: " + System.identityHashCode(buscador_key));
                 int numRand = random.nextInt(200);                
                 Casilleros casillero = eCommerce.getCasillero(numRand);
 
