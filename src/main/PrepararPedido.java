@@ -49,7 +49,7 @@ public class PrepararPedido extends Proceso{
                     casillero.setPedido(pedido);                        
                     casillero.setEstado(EstadoCasillero.OCUPADO);       
                     pedido.setCasilleroAsociado(casillero);
-                    //System.out.println(Thread.currentThread().getName() + " ha preparado el pedido " + pedido.getId() + " en el casillero [" + casillero.getId() + "]");
+                    System.out.println(Thread.currentThread().getName() + " ha preparado el pedido " + pedido.getId() + " en el casillero [" + casillero.getId() + "]");
                     break; 
                 }
             }   

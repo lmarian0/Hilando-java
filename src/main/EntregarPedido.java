@@ -43,10 +43,11 @@ public class EntregarPedido extends Proceso{
         synchronized (select_key) {
                 if (confirmarPedido()) { // 90% de éxito
                     eCommerce.getRegistroPedidos().addEntregados(pedido);
-                    //System.out.println(Thread.currentThread().getName() + " entrego el pedido " + pedido.getId() + " del casillero " + pedido.getCasilleroAsociado().getId());
+                    System.out.println(Thread.currentThread().getName() + " entrego el pedido " + pedido.getId());
                     pedido.setEstado(EstadoPedido.ENTREGADO);
 
                 } else { // 10% de fallo
+                    System.out.println("Pedido " + pedido.getId()+ " fallido en la entrega");
                     eCommerce.getRegistroPedidos().addFallidos(pedido);
                     pedido.setEstado(EstadoPedido.FALLIDO);
                 }

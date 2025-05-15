@@ -27,9 +27,11 @@ private static final Object select_key = new Object();
                 }
                 synchronized(select_key){
                     if(verificarPedido()){
+                        System.out.println(Thread.currentThread().getName() + " despacho el pedido " + pedido.getId() + " del casillero " + pedido.getCasilleroAsociado().getId());
                         pedido.getCasilleroAsociado().setEstado(EstadoCasillero.VACIO);
                         eCommerce.getRegistroPedidos().addTransito(pedido);
                     }else{
+                        System.out.println("Pedido " + pedido.getId()+ " fallido en el despacho");
                         pedido.getCasilleroAsociado().setEstado(EstadoCasillero.FUERA_SERVICIO);
                         eCommerce.getRegistroPedidos().addFallidos(pedido);
                     }

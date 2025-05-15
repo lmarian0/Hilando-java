@@ -39,11 +39,11 @@ public class Main {
 
       //  //ETAPA 4: VerificarPedido (2 hilos)
 
-      // for (int i = 0; i<2; i++){
-      //   Thread verificacion = new Thread(new VerificarPedido(empresa), "Verification_thread " + (i+1));
-      //   verificacion.start();
-      //   threads.add(verificacion);
-      //  }
+      for (int i = 0; i<2; i++){
+        Thread verificacion = new Thread(new VerificarPedido(empresa), "Verification_thread " + (i+1));
+        verificacion.start();
+        threads.add(verificacion);
+      }
 
       try{
         Thread.sleep(30000); // Simular tiempo de ejecucion del programa
