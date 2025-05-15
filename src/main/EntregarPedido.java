@@ -1,7 +1,6 @@
 //package main;
 
-import java.util.List;
-//import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.Random;
 
@@ -9,7 +8,8 @@ public class EntregarPedido extends Proceso{
 
     private final int demoraE;
     private final Random random = new Random();
-    
+    private static final Object index_key = new Object();
+    private static final Object select_key = new Object();
 
     public EntregarPedido(EmpresaLogistica eCommerce, int demoraE) {
         super(eCommerce);
@@ -30,39 +30,32 @@ public class EntregarPedido extends Proceso{
     }
 
     public void procesarEntrega() {
-        List <Pedido> pedidosEnTransito;
         Pedido pedido;
-        synchronized(eCommerce.getRegistroPedidos()){
-            pedidosEnTransito = eCommerce.getRegistroPedidos().getTransito();
-            if (pedidosEnTransito.isEmpty()) { 
+        synchronized(index_key){
+            if (eCommerce.getRegistroPedidos().getTransito().isEmpty()) { 
                 return;
             }
-            int indiceAleatorio = random.nextInt(pedidosEnTransito.size());
-            pedido = pedidosEnTransito.get(indiceAleatorio);
+            int indiceAleatorio = random.nextInt(eCommerce.getRegistroPedidos().getTransito().size());
+            pedido = eCommerce.getRegistroPedidos().getTransito().get(indiceAleatorio);
+            eCommerce.getRegistroPedidos().delTransito(pedido);
+        }
 
-            synchronized (pedido) {
-                if (verificarDatos()) { // 90% de éxito
-                    eCommerce.getRegistroPedidos().delTransito(pedido);
+        synchronized (select_key) {
+                if (confirmarPedido()) { // 90% de éxito
                     eCommerce.getRegistroPedidos().addEntregados(pedido);
-                    System.out.println(Thread.currentThread().getName() + " entrego el pedido " + pedido.getId() + " del casillero " + pedido.getCasilleroAsociado().getId());
+                    //System.out.println(Thread.currentThread().getName() + " entrego el pedido " + pedido.getId() + " del casillero " + pedido.getCasilleroAsociado().getId());
                     pedido.setEstado(EstadoPedido.ENTREGADO);
-        
-                    // Liberar casillero asociado
-                    pedido.getCasilleroAsociado().liberar();
-                    System.out.println("Casillero liberado:");
+
                 } else { // 10% de fallo
-                    eCommerce.getRegistroPedidos().delTransito(pedido);
                     eCommerce.getRegistroPedidos().addFallidos(pedido);
-                    
                     pedido.setEstado(EstadoPedido.FALLIDO);
                 }
             }
-        }
         
     }
     
 
-    public boolean verificarDatos(){
-        return random.nextDouble() <= 0.9;
+    private boolean confirmarPedido(){
+        return ThreadLocalRandom.current().nextDouble(0.0, 1.0) <= 0.9;
     }
 }
