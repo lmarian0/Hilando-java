@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit;
 public class PrepararPedido extends Proceso{
     private Random random = new Random();
     private GeneradorPedidos pedidosIniciales = new GeneradorPedidos(); 
-    private final Object buscador_key = new Object();
+    private static final Object buscador_key = new Object();
 
     public PrepararPedido(EmpresaLogistica eCommerce,GeneradorPedidos pedidosIniciales) {
         super(eCommerce);
@@ -41,6 +41,7 @@ public class PrepararPedido extends Proceso{
     private void ubicarPedido(Pedido pedido) {
         synchronized (buscador_key) {
             while (true) {
+                //System.out.println(Thread.currentThread().getName() + " - index_key hash: " + System.identityHashCode(buscador_key));
                 int numRand = random.nextInt(200);                
                 Casilleros casillero = eCommerce.getCasillero(numRand);
 
@@ -48,7 +49,7 @@ public class PrepararPedido extends Proceso{
                     casillero.setPedido(pedido);                        
                     casillero.setEstado(EstadoCasillero.OCUPADO);       
                     pedido.setCasilleroAsociado(casillero);
-                    System.out.println(Thread.currentThread().getName() + " ha preparado el pedido " + pedido.getId() + " en el casillero [" + casillero.getId() + "]");
+                    //System.out.println(Thread.currentThread().getName() + " ha preparado el pedido " + pedido.getId() + " en el casillero [" + casillero.getId() + "]");
                     break; 
                 }
             }   

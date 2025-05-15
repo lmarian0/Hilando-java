@@ -11,7 +11,7 @@ public class RegistroPedidos {
     private List<Pedido> fallidos;
     private List<Pedido> verificados;
 
-    private final Object KeyPreparacion, KeyEntrega, KeyTransito, KeyFallidos, KeyVerificados;
+    private final static Object KeyPreparacion=new Object(), KeyEntrega=new Object(), KeyTransito=new Object(), KeyFallidos=new Object(), KeyVerificados=new Object();
 
     public RegistroPedidos(){
         this.enPreparacion= new ArrayList<>();
@@ -19,12 +19,6 @@ public class RegistroPedidos {
         this.enTransito = new ArrayList<>();
         this.fallidos = new ArrayList<>();
         this.verificados = new ArrayList<>();
-
-        this.KeyPreparacion = new Object();
-        this.KeyEntrega = new Object();
-        this.KeyVerificados = new Object();
-        this.KeyTransito = new Object();
-        this.KeyFallidos = new Object();
     }
 
     // -----------------------------------------------------------------------------------------------
@@ -62,7 +56,7 @@ public class RegistroPedidos {
     }
 
 
-    public synchronized void addEntregados (Pedido pedido){
+    public void addEntregados (Pedido pedido){
         if(pedido == null){
             System.out.println("No se puede agregar un pedido nulo a la lista de pedidos entregados");
             return;

@@ -2,75 +2,50 @@
 
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
-import java.util.List;
 
 public class DespacharPedido extends Proceso{
     public DespacharPedido(EmpresaLogistica eCommerce) {
         super(eCommerce);
     }
 
+private static final Object index_key = new Object();
+private static final Object select_key = new Object();
+
     @Override
     public void run() {
-
-        /*Agarrar un pedido aleatorio de la lista preparacion */
-        Pedido pedido = null;
-        
-            while(!Thread.currentThread().isInterrupted()) {
-            try {    
-                List<Pedido> lista= eCommerce.getRegistroPedidos().getPreparacion();
-
-                if (lista.isEmpty()){
-                    TimeUnit.MILLISECONDS.sleep(10);
-                    //System.out.println("No hay pedidos, a dormir...");
-                    continue;
+        while (true) {
+            try {
+                Pedido pedido;
+                synchronized (index_key) {
+                    if(eCommerce.getRegistroPedidos().getPreparacion().isEmpty()){
+                        TimeUnit.MILLISECONDS.sleep(10);
+                        continue; // Salta a la siguiente iteracion del while
+                    }
+                    int index = ThreadLocalRandom.current().nextInt(eCommerce.getRegistroPedidos().getPreparacion().size());
+                    pedido = eCommerce.getRegistroPedidos().getPreparacion().get(index);
+                    eCommerce.getRegistroPedidos().delPreparacion(pedido);
                 }
-                synchronized(eCommerce.getRegistroPedidos()){
-                    int index = ThreadLocalRandom.current().nextInt(lista.size());
-                    pedido = lista.get(index);
-                    
-                    synchronized(pedido){
-                        if (verificarDatos() && pedido.getEstado()==EstadoPedido.EN_PREPARACION){
-                            liberarCasillero(pedido);
-                            System.out.println(Thread.currentThread().getName() + " asignó el pedido: " + pedido.getId());
-                            pedido.setEstado(EstadoPedido.EN_TRANSITO);
-                            eCommerce.getRegistroPedidos().delPreparacion(pedido);
-                            eCommerce.getRegistroPedidos().addTransito(pedido);
-                            System.out.println("entre despachar1------------------------------------------------");
-                        }
-                        else {
-                            marcarCasilleroFueraDeServicio(pedido);
-                            eCommerce.getRegistroPedidos().delPreparacion(pedido);
-                            eCommerce.getRegistroPedidos().addFallidos(pedido);
-                            System.out.println("entre despachar2------------------------------------------------");
-                        } 
-
+                synchronized(select_key){
+                    if(verificarPedido()){
+                        pedido.getCasilleroAsociado().setEstado(EstadoCasillero.VACIO);
+                        eCommerce.getRegistroPedidos().addTransito(pedido);
+                    }else{
+                        pedido.getCasilleroAsociado().setEstado(EstadoCasillero.FUERA_SERVICIO);
+                        eCommerce.getRegistroPedidos().addFallidos(pedido);
                     }
                 }
-                TimeUnit.MILLISECONDS.sleep(50);
-            }catch (InterruptedException e) {
-                Thread.currentThread().interrupt(); // Restablecer el estado de interrupción
+                TimeUnit.MILLISECONDS.sleep(20);
+            } catch (InterruptedException e) {
+                System.out.println(Thread.currentThread().getName() + " interrumpido.");
+                Thread.currentThread().interrupt();
                 break;
             }
         }
     }
+    
 
-    private void liberarCasillero(Pedido pedido) {
-        if (pedido.getCasilleroAsociado() == null) {
-            throw new IllegalStateException("El pedido no tiene un casillero asociado.");
-        }
-        pedido.getCasilleroAsociado().liberar();
-    }
-
-    private void marcarCasilleroFueraDeServicio(Pedido pedido) {
-        if (pedido.getCasilleroAsociado() == null) {
-            throw new IllegalStateException("El pedido no tiene un casillero asociado.");
-        }
-        pedido.getCasilleroAsociado().setEstado(EstadoCasillero.FUERA_SERVICIO);
-    }
-
-
-    public boolean verificarDatos(){
-        ThreadLocalRandom probabilidad = ThreadLocalRandom.current();
-        return probabilidad.nextDouble() <= 0.85;
+    private boolean verificarPedido(){
+        return ThreadLocalRandom.current().nextDouble(0.0, 1.0) <= 0.85;
     }
 }
+   

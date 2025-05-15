@@ -15,17 +15,17 @@ public class Main {
       //ETAPA 1: PrepararPedido (3 hilos)
 
       for (int i = 0; i<3; i++){
-        Thread preparacion = new Thread(new PrepararPedido(empresa,nuevos_pedidos), "Preparation_thread " + (i+1));
-        preparacion.start();
-        threads.add(preparacion);
+          Thread preparacion = new Thread(new PrepararPedido(empresa,nuevos_pedidos), "Preparation_thread " + (i+1));
+          preparacion.start();
+          threads.add(preparacion);
       }
 
        //ETAPA 2: DespachoPedido (2 hilos)
 
       for (int i = 0; i<2; i++){
-        Thread despacho = new Thread(new DespacharPedido(empresa), "Dispatch_thread " + (i+1));
-        despacho.start();
-        threads.add(despacho);
+          Thread despacho = new Thread(new DespacharPedido(empresa), "Dispatch_thread " + (i+1));
+          despacho.start();
+          threads.add(despacho);
       }
 
        //ETAPA 3: EntregaPedido (3 hilos)
