@@ -46,13 +46,70 @@ public class Main {
       }
 
       try{
-        Thread.sleep(30000); // Simular tiempo de ejecucion del programa
+        Thread.sleep(1); // Damos un tiempo para que arranquen los subprocesos
       } catch(InterruptedException e){
         System.out.println("Finalizo el registro");
       }
 
-      for (Thread thread : threads){
-        thread.interrupt();
+
+    
+   // Esperar hasta que finalice la generacion de los pedidos y vamos revisando si finalizo la generacion de los pedidos
+while (!nuevos_pedidos.getFinalizado()) {
+  try {
+      Thread.sleep(1000); // Pausa para evitar que se consuman recursos con el while
+  } catch (InterruptedException e) {
+      System.out.println("Monitoreo interrumpido.");
+      break;
+  }
+}
+
+// Esperar hasta que el primer hilo de PrepararPedido termine
+Thread primerPreparador = threads.get(1); // Primer hilo de PrepararPedido (posición 1 si logThread está en 0)
+while (primerPreparador.getState() != Thread.State.TERMINATED) {
+  try {
+      Thread.sleep(500); // Pausa para evitar que se consuman recursos con el while
+  } catch (InterruptedException e) {
+      System.out.println("Se interrumpio la espera del primer hilo de PrepararPedido");
+  }
+}
+
+// Ahora revisamos si el siguiente hilo está en TIMED_WAITING y lo interrumpimos si es necesario
+for (int i = 0; i < threads.size() - 1; i++) {
+  Thread hiloActual = threads.get(i);
+  Thread siguienteHilo = threads.get(i + 1);
+
+  System.out.println(hiloActual.getName() + " Estado: " + hiloActual.getState());
+  System.out.println(siguienteHilo.getName() + " Estado: " + siguienteHilo.getState());
+
+  if (hiloActual.getState() == Thread.State.TERMINATED && (siguienteHilo.getState() == Thread.State.TIMED_WAITING)) {
+      System.out.println("Interrumpiendo " + siguienteHilo.getName());
+      siguienteHilo.interrupt(); // Interrumpimos el hilo siguiente
+      try {
+        threads.get(i).join(); 
+        Thread.sleep(100);
+      } catch (InterruptedException e) {
+        System.out.println("Se interrumpio el apagado en serie.");
       }
+      
+      // Interrumpimos solo uno
+  }
+  // Ahora revisamos si el siguiente hilo o el actual están BLOCKED volvemos un paso atras para que vuelva a revisar el estado de los procesos
+  else if( siguienteHilo.getState() == Thread.State.BLOCKED || hiloActual.getState() == Thread.State.BLOCKED){ i=-1;} 
+
+  // Si terminaron todos los procesos anteriores y el hilo verificador es RUNNABLE, interrumpimos el log y los verificadores
+  if((i == threads.size()-1 || i == threads.size()-2) && hiloActual.getState() == Thread.State.RUNNABLE){ 
+    threads.get(0).interrupt(); // Interrumpimos el log
+    threads.get(i).interrupt(); // Interrumpimos el verificador 1
+    threads.get(i++).interrupt(); // Interrumpimos el verificador 2
+    
+    try {
+      Thread.sleep(100); // Esperamos a que el log termine
+      System.exit(0); // Terminamos el programa
+    } catch (InterruptedException e) {
+      System.out.println("Se interrumpio la finalizacion del programa");
     }
+    
+  }
+}
+}
 }

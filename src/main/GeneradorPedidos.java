@@ -5,6 +5,7 @@ public class GeneradorPedidos {
 
     private List<Pedido>Arrivados;
     private final int max_pedidos = 500;
+    private boolean finalizado = false;
 
     public GeneradorPedidos(){
         Arrivados = new ArrayList<Pedido>();
@@ -13,6 +14,7 @@ public class GeneradorPedidos {
         for(int i = 0; i<max_pedidos; i++){
             Arrivados.add(new Pedido(i+1));
         }
+        finalizado = true;
     }
     
     public synchronized Pedido obtenerPedido(){         //Solo vamos a tener 1 instancia de GeneradorPedidos, entonces tener el metodo synchronized nos asegura no tomar 1 pedido por distintos hilos
@@ -21,5 +23,9 @@ public class GeneradorPedidos {
             return null;                               //Poner condicion de verificacion para que no siga si pedido == null
         }
         return Arrivados.remove(0);
+    }
+
+    public boolean getFinalizado(){
+        return finalizado;
     }
 }
