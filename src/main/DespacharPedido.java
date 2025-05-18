@@ -4,12 +4,16 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 public class DespacharPedido extends Proceso{
-    public DespacharPedido(EmpresaLogistica eCommerce) {
+
+    private final int demoraD;
+
+    public DespacharPedido(EmpresaLogistica eCommerce, int demoraD) {
         super(eCommerce);
+        this.demoraD = demoraD;
     }
 
-private static final Object index_key = new Object();
-private static final Object select_key = new Object();
+    private static final Object index_key = new Object();
+    private static final Object select_key = new Object();
 
     @Override
     public void run() {
@@ -36,7 +40,7 @@ private static final Object select_key = new Object();
                         eCommerce.getRegistroPedidos().addFallidos(pedido);
                     }
                 }
-                TimeUnit.MILLISECONDS.sleep(20);
+                TimeUnit.MILLISECONDS.sleep(demoraD);
             } catch (InterruptedException e) {
                 System.out.println(Thread.currentThread().getName() + " interrumpido.");
                 Thread.currentThread().interrupt();

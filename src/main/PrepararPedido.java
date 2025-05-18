@@ -6,10 +6,11 @@ public class PrepararPedido extends Proceso{
     private Random random = new Random();
     private GeneradorPedidos pedidosIniciales = new GeneradorPedidos(); 
     private static final Object buscador_key = new Object();
-
-    public PrepararPedido(EmpresaLogistica eCommerce,GeneradorPedidos pedidosIniciales) {
+    private final int demoraP;
+    public PrepararPedido(EmpresaLogistica eCommerce,GeneradorPedidos pedidosIniciales, int demoraP) {
         super(eCommerce);
         this.pedidosIniciales = pedidosIniciales; 
+        this.demoraP = demoraP;
 
     }
 
@@ -25,7 +26,7 @@ public class PrepararPedido extends Proceso{
                 }
                 ubicarPedido(pedido); // 2 hilos no pueden asignar un casillero al mismo tiempo
                 eCommerce.getRegistroPedidos().addPreparacion(pedido);  
-                TimeUnit.MILLISECONDS.sleep(50);
+                TimeUnit.MILLISECONDS.sleep(demoraP);
                     
             } catch (InterruptedException e) {
                 System.out.println(Thread.currentThread().getName() + " interrumpido.");

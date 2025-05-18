@@ -33,6 +33,10 @@ public class LogEstadisticas implements Runnable {
                     break;
                 }
             }
+            int totales = empresa.getRegistroPedidos().getFallidos().size() + empresa.getRegistroPedidos().getVerificados().size();
+            writer.write("Pedidos totales: " + (totales));
+            writer.newLine();
+            writer.flush();
 
             // Imprimir estadísticas finales
             imprimirEstadisticasFinales(writer);
@@ -63,8 +67,5 @@ public class LogEstadisticas implements Runnable {
             count += casillero.getContadorOcupaciones();
         }
         writer.write("Total de ocupaciones en casilleros: " + count);
-        writer.newLine();
-        writer.write("Robos a deliverys= " + (500-count));
-        writer.flush();
     }
 }

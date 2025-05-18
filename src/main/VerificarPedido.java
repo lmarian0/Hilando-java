@@ -1,12 +1,15 @@
 //package main;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class VerificarPedido extends Proceso{
-    public VerificarPedido(EmpresaLogistica eCommerce) {
+
+    private final int demoraV; // Tiempo de verificación en milisegundos
+    
+    public VerificarPedido(EmpresaLogistica eCommerce, int demoraV) {
         super(eCommerce);
+        this.demoraV = demoraV;
     }
 
 private static final Object index_key = new Object();
@@ -36,7 +39,7 @@ private static final Object select_key = new Object();
                         System.out.println("Pedido " + pedido.getId()+ " fallido en la verificación.");
                     }
                 }
-                TimeUnit.MILLISECONDS.sleep(10);
+                TimeUnit.MILLISECONDS.sleep(demoraV);
             }catch (InterruptedException e) {
                 System.out.println(Thread.currentThread().getName() + " interrumpido.");
                 Thread.currentThread().interrupt(); // Restablecer el estado de interrupción
