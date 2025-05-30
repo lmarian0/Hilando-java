@@ -1,13 +1,13 @@
 //package main;
 
-public class Casilleros{
+public class Casillero{
     private EstadoCasillero estado;
     private int contadorOcupaciones;
     private Pedido pedido; 
     private int idCasillero;
 
 
-    public Casilleros(int idCasillero){
+    public Casillero(int idCasillero){
         this.estado = EstadoCasillero.VACIO;
         this.contadorOcupaciones = 0;
         this.pedido = null;
@@ -77,5 +77,22 @@ public class Casilleros{
 
     public int getId() {
         return idCasillero;
+    }
+
+    /**
+     * Intenta ocupar el casillero con el pedido dado de forma atómica.
+     * @param pedido El pedido a asignar
+     * @return true si se ocupó exitosamente, false si no estaba vacío
+     */
+    public boolean intentarOcupar(Pedido pedido) {
+        synchronized (this) {
+            if (getEstado() == EstadoCasillero.VACIO) {
+                setPedido(pedido);
+                setEstado(EstadoCasillero.OCUPADO);
+                pedido.setCasilleroAsociado(this);
+                return true;
+            }
+            return false;
+        }
     }
 }

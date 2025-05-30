@@ -5,7 +5,6 @@ import java.util.concurrent.TimeUnit;
 public class PrepararPedido extends Proceso{
     private Random random = new Random();
     private GeneradorPedidos pedidosIniciales = new GeneradorPedidos(); 
-    private static final Object buscador_key = new Object();
     private final int demoraP;
     public PrepararPedido(EmpresaLogistica eCommerce,GeneradorPedidos pedidosIniciales, int demoraP) {
         super(eCommerce);
@@ -39,20 +38,13 @@ public class PrepararPedido extends Proceso{
     // (storage compartment) to a given pedido (order) within the eCommerce system. Here's a breakdown
     // of what the method does:
     private void ubicarPedido(Pedido pedido) {
-        synchronized (buscador_key) {
-            while (true) {
-                //System.out.println(Thread.currentThread().getName() + " - index_key hash: " + System.identityHashCode(buscador_key));
-                int numRand = random.nextInt(200);                
-                Casilleros casillero = eCommerce.getCasillero(numRand);
-
-                if (casillero.getEstado() == EstadoCasillero.VACIO) {
-                    casillero.setPedido(pedido);                        
-                    casillero.setEstado(EstadoCasillero.OCUPADO);       
-                    pedido.setCasilleroAsociado(casillero);
-                    System.out.println(Thread.currentThread().getName() + " ha preparado el pedido " + pedido.getId() + " en el casillero [" + casillero.getId() + "]");
-                    break; 
-                }
-            }   
+        while (true) {
+            int numRand = random.nextInt(200);
+            Casillero casillero = eCommerce.getCasillero(numRand);
+            if (casillero.intentarOcupar(pedido)) {
+                System.out.println(Thread.currentThread().getName() + " ha preparado el pedido " + pedido.getId() + " en el casillero [" + casillero.getId() + "]");
+                break;
+            }
         }
     }
 }

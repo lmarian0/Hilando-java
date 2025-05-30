@@ -3,18 +3,18 @@
 import java.util.ArrayList;
 
 public class EmpresaLogistica{
-    private ArrayList<Casilleros> matrizCasilleros;
+    private ArrayList<Casillero> matrizCasilleros;
     private RegistroPedidos registro;
 
     public EmpresaLogistica(){
-        this.matrizCasilleros = new ArrayList<Casilleros>(200);
+        this.matrizCasilleros = new ArrayList<Casillero>(200);
         this.registro = new RegistroPedidos();
         for (int i = 0; i < 200; i++){
-            matrizCasilleros.add(new Casilleros(i));
+            matrizCasilleros.add(new Casillero(i));
         }
     }
 
-    public synchronized Casilleros getCasillero(int i){
+    public synchronized Casillero getCasillero(int i){
         if (i<0 || i>= matrizCasilleros.size()){
             throw new IllegalArgumentException("Indice invalido: " + i );
         }

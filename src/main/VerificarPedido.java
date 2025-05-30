@@ -12,32 +12,21 @@ public class VerificarPedido extends Proceso{
         this.demoraV = demoraV;
     }
 
-private static final Object index_key = new Object();
-private static final Object select_key = new Object();
-
     @Override
     public void run() {
         while (!Thread.currentThread().isInterrupted()) {
             try {
-                Pedido pedido;
-                // Seleccionar un pedido aleatorio
-                synchronized (index_key) {
-                    if (eCommerce.getRegistroPedidos().getEntregados().isEmpty()) {
-                        continue;
-                    }
-                    int index = ThreadLocalRandom.current().nextInt(eCommerce.getRegistroPedidos().getEntregados().size());
-                    pedido = eCommerce.getRegistroPedidos().getEntregados().get(index);
-                    eCommerce.getRegistroPedidos().delEntregados(pedido);
+                RegistroPedidos registro = eCommerce.getRegistroPedidos();
+                Pedido pedido = registro.obtenerYEliminarEntregadoAleatorio();
+                if (pedido == null) {
+                    continue;
                 }
-
-                synchronized (select_key) {
-                    if (verificarDatos()) {
-                        eCommerce.getRegistroPedidos().addVerificados(pedido);
-                        System.out.println("Pedido " + pedido.getId() +" verificado correctamente.");
-                    } else {
-                        eCommerce.getRegistroPedidos().addFallidos(pedido);
-                        System.out.println("Pedido " + pedido.getId()+ " fallido en la verificación.");
-                    }
+                if (verificarDatos()) {
+                    registro.addVerificados(pedido);
+                    System.out.println("Pedido " + pedido.getId() +" verificado correctamente.");
+                } else {
+                    registro.addFallidos(pedido);
+                    System.out.println("Pedido " + pedido.getId()+ " fallido en la verificación.");
                 }
                 TimeUnit.MILLISECONDS.sleep(demoraV);
             }catch (InterruptedException e) {

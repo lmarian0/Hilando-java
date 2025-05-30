@@ -8,7 +8,7 @@ public class Pedido {
 
     // Atributos
     private EstadoPedido estado;           // Estado actual del pedido
-    private Casilleros casilleroAsociado;   // Casillero asignado al pedido
+    private Casillero casilleroAsociado;   // Casillero asignado al pedido
     private int idPedido;                  // ID del pedido (no se utiliza en este código, pero puede ser útil para futuras implementaciones)
 
     public Pedido(int idPedido) {
@@ -36,7 +36,7 @@ public class Pedido {
         }
     }
 
-    public void setCasilleroAsociado(Casilleros casillero) {
+    public void setCasilleroAsociado(Casillero casillero) {
         synchronized(casillero_key){
             if (casillero == null) {
                 throw new IllegalArgumentException("El casillero asociado no puede ser nulo.");
@@ -46,7 +46,7 @@ public class Pedido {
         
     }
 
-    public Casilleros getCasilleroAsociado() {
+    public Casillero getCasilleroAsociado() {
         synchronized(casillero_key){
             return casilleroAsociado;
         }

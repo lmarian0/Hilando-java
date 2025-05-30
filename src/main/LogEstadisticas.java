@@ -61,7 +61,7 @@ public class LogEstadisticas implements Runnable {
         writer.newLine();
         int count = 0;
         for (int i = 0; i < 200; i++) {
-            Casilleros casillero = empresa.getCasillero(i);
+            Casillero casillero = empresa.getCasillero(i);
             writer.write("Casillero " + i + ": Ocupaciones totales = " + casillero.getContadorOcupaciones());
             writer.newLine();
             count += casillero.getContadorOcupaciones();

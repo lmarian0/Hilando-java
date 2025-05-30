@@ -8,8 +8,6 @@ public class EntregarPedido extends Proceso{
 
     private final int demoraE;
     private final Random random = new Random();
-    private static final Object index_key = new Object();
-    private static final Object select_key = new Object();
 
     public EntregarPedido(EmpresaLogistica eCommerce, int demoraE) {
         super(eCommerce);
@@ -30,29 +28,21 @@ public class EntregarPedido extends Proceso{
     }
 
     public void procesarEntrega() {
-        Pedido pedido;
-        synchronized(index_key){
-            if (eCommerce.getRegistroPedidos().getTransito().isEmpty()) { 
-                return;
-            }
-            int indiceAleatorio = random.nextInt(eCommerce.getRegistroPedidos().getTransito().size());
-            pedido = eCommerce.getRegistroPedidos().getTransito().get(indiceAleatorio);
-            eCommerce.getRegistroPedidos().delTransito(pedido);
+        RegistroPedidos registro = eCommerce.getRegistroPedidos();
+        Pedido pedido = registro.obtenerYEliminarTransitoAleatorio();
+        if (pedido == null) {
+            return;
         }
+        if (confirmarPedido()) { // 90% de éxito
+            registro.addEntregados(pedido);
+            System.out.println(Thread.currentThread().getName() + " entrego el pedido " + pedido.getId());
+            pedido.setEstado(EstadoPedido.ENTREGADO);
 
-        synchronized (select_key) {
-                if (confirmarPedido()) { // 90% de éxito
-                    eCommerce.getRegistroPedidos().addEntregados(pedido);
-                    System.out.println(Thread.currentThread().getName() + " entrego el pedido " + pedido.getId());
-                    pedido.setEstado(EstadoPedido.ENTREGADO);
-
-                } else { // 10% de fallo
-                    System.out.println("Pedido " + pedido.getId()+ " fallido en la entrega");
-                    eCommerce.getRegistroPedidos().addFallidos(pedido);
-                    pedido.setEstado(EstadoPedido.FALLIDO);
-                }
-            }
-        
+        } else { // 10% de fallo
+            System.out.println("Pedido " + pedido.getId()+ " fallido en la entrega");
+            registro.addFallidos(pedido);
+            pedido.setEstado(EstadoPedido.FALLIDO);
+        }
     }
     
 

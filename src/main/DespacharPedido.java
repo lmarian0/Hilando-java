@@ -12,33 +12,24 @@ public class DespacharPedido extends Proceso{
         this.demoraD = demoraD;
     }
 
-    private static final Object index_key = new Object();
-    private static final Object select_key = new Object();
-
     @Override
     public void run() {
         while (true) {
             try {
-                Pedido pedido;
-                synchronized (index_key) {
-                    if(eCommerce.getRegistroPedidos().getPreparacion().isEmpty()){
-                        TimeUnit.MILLISECONDS.sleep(10);
-                        continue; // Salta a la siguiente iteracion del while
-                    }
-                    int index = ThreadLocalRandom.current().nextInt(eCommerce.getRegistroPedidos().getPreparacion().size());
-                    pedido = eCommerce.getRegistroPedidos().getPreparacion().get(index);
-                    eCommerce.getRegistroPedidos().delPreparacion(pedido);
+                RegistroPedidos registro = eCommerce.getRegistroPedidos();
+                Pedido pedido = registro.obtenerYEliminarPreparacionAleatorio();
+                if (pedido == null) {
+                    TimeUnit.MILLISECONDS.sleep(10);
+                    continue;
                 }
-                synchronized(select_key){
-                    if(verificarPedido()){
-                        System.out.println(Thread.currentThread().getName() + " despacho el pedido " + pedido.getId() + " del casillero " + pedido.getCasilleroAsociado().getId());
-                        pedido.getCasilleroAsociado().setEstado(EstadoCasillero.VACIO);
-                        eCommerce.getRegistroPedidos().addTransito(pedido);
-                    }else{
-                        System.out.println("Pedido " + pedido.getId()+ " fallido en el despacho");
-                        pedido.getCasilleroAsociado().setEstado(EstadoCasillero.FUERA_SERVICIO);
-                        eCommerce.getRegistroPedidos().addFallidos(pedido);
-                    }
+                if(verificarPedido()){
+                    System.out.println(Thread.currentThread().getName() + " despacho el pedido " + pedido.getId() + " del casillero " + pedido.getCasilleroAsociado().getId());
+                    pedido.getCasilleroAsociado().setEstado(EstadoCasillero.VACIO);
+                    registro.addTransito(pedido);
+                }else{
+                    System.out.println("Pedido " + pedido.getId()+ " fallido en el despacho");
+                    pedido.getCasilleroAsociado().setEstado(EstadoCasillero.FUERA_SERVICIO);
+                    registro.addFallidos(pedido);
                 }
                 TimeUnit.MILLISECONDS.sleep(demoraD);
             } catch (InterruptedException e) {
@@ -54,4 +45,4 @@ public class DespacharPedido extends Proceso{
         return ThreadLocalRandom.current().nextDouble(0.0, 1.0) <= 0.85;
     }
 }
-   
+
