@@ -11,6 +11,8 @@ public class RegistroPedidos {
     private List<Pedido> fallidos;
     private List<Pedido> verificados;
 
+    private static final Object KeyPreparacion=new Object(), KeyEntrega=new Object(), KeyTransito=new Object(), KeyFallidos=new Object(), KeyVerificados=new Object();
+    
     public RegistroPedidos(){
         this.enPreparacion= new ArrayList<>();
         this.entregados = new ArrayList<>();
@@ -21,28 +23,28 @@ public class RegistroPedidos {
 
     // -----------------------------------------------------------------------------------------------
     public List<Pedido> getPreparacion(){
-        synchronized(this){
-            return new ArrayList<>(enPreparacion);
+        synchronized(KeyPreparacion){
+            return enPreparacion;
         }
     }
     public List<Pedido> getEntregados(){
-        synchronized(this){
-            return new ArrayList<>(entregados);
+        synchronized(KeyEntrega){
+            return entregados;
         }
     }
     public List<Pedido> getTransito(){
-        synchronized(this){
-            return new ArrayList<>(enTransito);
+        synchronized(KeyTransito){
+            return enTransito;
         }
     }
     public List<Pedido> getFallidos(){
-        synchronized(this){
-            return new ArrayList<>(fallidos);
+        synchronized(KeyFallidos){
+            return fallidos;
         }
     }
     public List<Pedido> getVerificados(){
-        synchronized(this){
-            return new ArrayList<>(verificados);
+        synchronized(KeyVerificados){
+            return verificados;
         }
     }
     //
@@ -53,7 +55,7 @@ public class RegistroPedidos {
             System.out.println("No se puede agregar un pedido nulo a la lista de pedidos en preparacion");
             return;
         }
-        synchronized (this) {
+        synchronized (KeyPreparacion) {
             if (enPreparacion.contains(pedido)) {
                 System.out.println("El pedido ya existe en la lista de pedidos en preparacion");
                 return;
@@ -69,7 +71,7 @@ public class RegistroPedidos {
             System.out.println("No se puede agregar un pedido nulo a la lista de pedidos entregados");
             return;
         }
-        synchronized (this) {
+        synchronized (KeyEntrega) {
             if (entregados.contains(pedido)) {
                 System.out.println("El pedido ya existe en la lista de pedidos entregados");
                 return;
@@ -84,7 +86,7 @@ public class RegistroPedidos {
             System.out.println("No se puede agregar un pedido nulo a la lista de pedidos en transito");
             return;
         }
-        synchronized (this) {
+        synchronized (KeyTransito) {
             if (enTransito.contains(pedido)) {
                 System.out.println("El pedido ya existe en la lista de pedidos en transito");
                 return;
@@ -98,7 +100,7 @@ public class RegistroPedidos {
             System.out.println("No se puede agregar un pedido nulo a la lista de pedidos fallidos");
             return;
         }
-        synchronized (this) {
+        synchronized (KeyFallidos) {
             if (fallidos.contains(pedido)) {
                 System.out.println("El pedido ya existe en la lista de pedidos fallidos");
                 return;
@@ -112,7 +114,7 @@ public class RegistroPedidos {
             System.out.println("No se puede agregar un pedido nulo a la lista de pedidos verificados");
             return;
         }
-        synchronized (this) {
+        synchronized (KeyVerificados) {
             if (verificados.contains(pedido)) {
                 System.out.println("El pedido ya existe en la lista de pedidos verificados");
                 return;
@@ -125,19 +127,19 @@ public class RegistroPedidos {
     //------------------------------------------------------------------------------------------------
 
     public void delPreparacion(Pedido pedido){
-        synchronized (this){
+        synchronized (KeyPreparacion){
             enPreparacion.remove(pedido);
         }
     }
 
     public void delEntregados (Pedido pedido){
-        synchronized (this){
+        synchronized (KeyEntrega){
             entregados.remove(pedido);
         }
     }
 
     public void delTransito (Pedido pedido){
-        synchronized (this){
+        synchronized (KeyTransito){
             enTransito.remove(pedido);
         }
     }
@@ -146,7 +148,7 @@ public class RegistroPedidos {
      * @return Pedido o null si vacío
      */
     public Pedido obtenerYEliminarPreparacionAleatorio() {
-        synchronized (this) {
+        synchronized (KeyPreparacion) {
             if (enPreparacion.isEmpty()) return null;
             int index = (int) (Math.random() * enPreparacion.size());
             return enPreparacion.remove(index);
@@ -156,7 +158,7 @@ public class RegistroPedidos {
      * Obtiene y elimina un pedido aleatorio de enTransito de forma atómica.
      */
     public Pedido obtenerYEliminarTransitoAleatorio() {
-        synchronized (this) {
+        synchronized (KeyTransito) {
             if (enTransito.isEmpty()) return null;
             int index = (int) (Math.random() * enTransito.size());
             return enTransito.remove(index);
@@ -166,7 +168,7 @@ public class RegistroPedidos {
      * Obtiene y elimina un pedido aleatorio de entregados de forma atómica.
      */
     public Pedido obtenerYEliminarEntregadoAleatorio() {
-        synchronized (this) {
+        synchronized (KeyEntrega) {
             if (entregados.isEmpty()) return null;
             int index = (int) (Math.random() * entregados.size());
             return entregados.remove(index);

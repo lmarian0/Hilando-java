@@ -2,12 +2,10 @@
 
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
-import java.util.Random;
 
 public class EntregarPedido extends Proceso{
 
     private final int demoraE;
-    private final Random random = new Random();
 
     public EntregarPedido(EmpresaLogistica eCommerce, int demoraE) {
         super(eCommerce);
