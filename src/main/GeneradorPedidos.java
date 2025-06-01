@@ -4,7 +4,7 @@ import java.util.List;
 public class GeneradorPedidos {
 
     private List<Pedido>Arrivados;
-    private final int max_pedidos = 2000;
+    private final int max_pedidos = 500;
 
     public GeneradorPedidos(){
         Arrivados = new ArrayList<Pedido>();
