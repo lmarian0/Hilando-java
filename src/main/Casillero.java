@@ -22,9 +22,8 @@ public class Casillero{
 
     public void liberar() {
         synchronized(pedido_key){
-            if(getEstado() == EstadoCasillero.FUERA_SERVICIO){
-                setEstado(EstadoCasillero.VACIO);
-                //System.out.println("Se desocupo el casillero: " + getId());
+            if(this.estado == EstadoCasillero.FUERA_SERVICIO){
+                this.estado = EstadoCasillero.VACIO;
                 this.pedido = null;
             }
         }
@@ -33,19 +32,6 @@ public class Casillero{
     public Pedido getPedido(){
         synchronized(pedido_key){
             return pedido;
-        }
-    }
-
-    public synchronized void setPedido(Pedido pedido_arrivado){
-        synchronized(pedido_key){
-            if(getEstado() == EstadoCasillero.VACIO){
-                setEstado(EstadoCasillero.OCUPADO);
-                this.pedido = pedido_arrivado;
-                // Se incrementa el contador de ocupaciones y se bloquea la lectura del contador para que hilos de clases externas no puedan leer el contador mientras se incrementa
-                synchronized(contador_key){
-                    this.contadorOcupaciones++;
-                }
-            }
         }
     }
 
@@ -85,14 +71,23 @@ public class Casillero{
      * @return true si se ocupó exitosamente, false si no estaba vacío
      */
     public boolean intentarOcupar(Pedido pedido) {
-        synchronized (this) {
-            if (getEstado() == EstadoCasillero.VACIO) {
-                setPedido(pedido);
-                setEstado(EstadoCasillero.OCUPADO);
-                pedido.setCasilleroAsociado(this);
-                return true;
+        boolean ocupado = false;
+        synchronized(estado_key) {
+            if (estado == EstadoCasillero.VACIO) {
+                estado = EstadoCasillero.OCUPADO;
+                ocupado = true;
             }
-            return false;
         }
+        if (ocupado) {
+            synchronized(pedido_key) {
+                this.pedido = pedido;
+            }
+            synchronized(contador_key) {
+                this.contadorOcupaciones++;
+            }
+            pedido.setCasilleroAsociado(this);
+            return true;
+        }
+        return false;
     }
 }
